@@ -1,4 +1,4 @@
-import { checkEmailOrUsernameTakenCheck } from "../../imports/imports.js";
+import { checkEmailOrUsernameTakenCheck } from "../../../imports/imports.js";
 
 const authUserValidation = async (req, res, next) => {
   const { email, username, firstName, lastName, password, role } = req.body;

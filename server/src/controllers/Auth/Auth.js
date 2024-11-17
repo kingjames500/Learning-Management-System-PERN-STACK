@@ -1,4 +1,8 @@
-import { PrismaClient } from "../../imports/imports.js";
+import {
+  PrismaClient,
+  checkUserExist,
+  comparePassword,
+} from "../../imports/imports.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -7,7 +11,6 @@ const client = new PrismaClient();
 const authRegisterUser = async (req, res) => {
   try {
     const { email, username, firstName, lastName, password, role } = req.body;
-    console.log(req.body);
 
     const hashPassword = await bcrypt.hash(password, 8);
 
@@ -29,4 +32,43 @@ const authRegisterUser = async (req, res) => {
   }
 };
 
-export default authRegisterUser;
+const authLoginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await checkUserExist(email);
+
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+
+    const isPasswordMatch = await comparePassword(password, user.password);
+
+    if (!isPasswordMatch) {
+      res.status(401).json({ message: "Invalid password" });
+      return;
+    }
+
+    const accessToken = jwt.sign(user.id, process.env.JWT_SECRET);
+
+    res
+      .status(200)
+      .cookie("authToken", accessToken, { httpOnly: true })
+      .json({
+        message: "login was successful!",
+        user: {
+          email: user.email,
+          username: user.username,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          role: user.role,
+        },
+      });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+    return;
+  }
+};
+
+export { authRegisterUser, authLoginUser };

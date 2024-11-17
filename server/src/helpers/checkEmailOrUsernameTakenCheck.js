@@ -17,4 +17,12 @@ const checkEmailOrUsernameTakenCheck = async (email, username) => {
   });
 };
 
-export default checkEmailOrUsernameTakenCheck;
+const checkUserExist = async (email) => {
+  return await client.user.findFirst({
+    where: {
+      email,
+    },
+  });
+};
+
+export { checkEmailOrUsernameTakenCheck, checkUserExist };

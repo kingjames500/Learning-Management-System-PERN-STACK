@@ -1,16 +1,19 @@
 import { PrismaClient } from "@prisma/client";
+
 import { Router } from "express";
 
 //files import only
-import checkEmailOrUsernameTakenCheck from "../helpers/checkEmailOrUsernameTakenCheck";
-import comparePassword from "../helpers/comparePassword";
-import authUserValidation from "../helpers/Validations/authValidation";
-import authRegisterUser from "../controllers/Auth/Auth";
+
+import comparePassword from "../helpers/comparePassword.js";
+import authUserValidation from "../helpers/Validations/authValidation.js";
+import authRegisterUser from "../controllers/Auth/Auth.js";
+import checkEmailOrUsernameTakenCheck from "../helpers/checkEmailOrUsernameTakenCheck.js";
 
 export {
   PrismaClient,
   Router,
-  checkEmailOrUsernameTakenCheck,
   comparePassword,
   authUserValidation,
+  authRegisterUser,
+  checkEmailOrUsernameTakenCheck,
 };

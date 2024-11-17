@@ -1,4 +1,4 @@
-import { PrismaClient } from "../../imports/imports";
+import { PrismaClient } from "../../imports/imports.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -7,6 +7,7 @@ const client = new PrismaClient();
 const authRegisterUser = async (req, res) => {
   try {
     const { email, username, firstName, lastName, password, role } = req.body;
+    console.log(req.body);
 
     const hashPassword = await bcrypt.hash(password, 8);
 

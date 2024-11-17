@@ -1,6 +1,6 @@
 import { checkEmailOrUsernameTakenCheck } from "../../imports/imports.js";
 
-const authUserValidation = (req, res, next) => {
+const authUserValidation = async (req, res, next) => {
   const { email, username, firstName, lastName, password, role } = req.body;
 
   if (!email) {
@@ -12,7 +12,7 @@ const authUserValidation = (req, res, next) => {
   }
   //check if the email and username exist in the database
   //if they do, return a message that the email or username already exists
-  const emailOrUsername = checkEmailOrUsernameTakenCheck(email, username);
+  const emailOrUsername = await checkEmailOrUsernameTakenCheck(email, username);
   if (emailOrUsername) {
     return res
       .status(400)

@@ -4,7 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 
 //import routes
-import authRoutes from "./routes/auth.js";
+import authRoutes from "./Routes/Auth/authRouter.js";
 
 const app = express();
 dotenv.config();
@@ -22,7 +22,7 @@ app.use(cookieParser());
 app.use(express.json());
 
 app.listen(process.env.SERVER_PORT, () => {
-  console.log(`Server is running on port ${process.env.PORT}`);
+  console.log(`Server is running on port ${process.env.SERVER_PORT}`);
 });
 
 // Routes for the server only

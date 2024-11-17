@@ -12,14 +12,78 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState } from "react";
+import { useMutation } from "react-query";
+import apiUrl from "../../lib/apiUrl.js";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 function Register() {
+  const redirect = useNavigate();
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  const { mutate, isLoading, isError, error } = useMutation({
+    mutationFn: async (registerUserData) => {
+      const response = await fetch(`${apiUrl}/auth/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(registerUserData),
+      });
+
+      if (response.ok === false) {
+        const error = await response.json();
+        throw new Error(error.message);
+      }
+
+      const data = await response.json();
+      return data;
+    },
+
+    onError: (error) => {
+      toast.error(error.message, {
+        duration: 3000,
+        description: "there was an error while registering",
+      });
+    },
+
+    onSuccess: () => {
+      toast.success("Account created successfully", {
+        duration: 3000,
+        description: "You have successfully created an account",
+      });
+
+      setTimeout(() => {
+        redirect("/auth/login");
+      }, 3000);
+    },
+  });
+
+  function handleRegisterUser(event) {
+    event.preventDefault();
+    if (password !== confirmPassword) {
+      toast.error("Password mismatch", {
+        duration: 1000,
+        description: "Password and confirm password do not match",
+      });
+      return;
+    }
+
+    const registerUser = {
+      email,
+      firstName,
+      lastName,
+      username,
+      password,
+    };
+
+    mutate(registerUser);
+  }
   return (
     <Card className="p-6 mb-6 shadow-lg rounded-lg bg-white w-[500px]">
       <CardHeader>
@@ -104,8 +168,12 @@ function Register() {
         </div>
       </CardContent>
       <CardFooter className="flex justify-end">
-        <Button className="px-6 py-2 text-white bg-indigo-600 rounded-md shadow-md hover:bg-indigo-700">
-          Register
+        <Button
+          className="px-6 py-2 text-white bg-indigo-600 rounded-md shadow-md hover:bg-indigo-700"
+          disabled={isLoading}
+          onClick={handleRegisterUser}
+        >
+          {isLoading ? "Loading..." : "Register"}
         </Button>
       </CardFooter>
     </Card>

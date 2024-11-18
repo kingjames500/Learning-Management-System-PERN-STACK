@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { QueryClientProvider, QueryClient } from "react-query";
 import { Toaster } from "sonner";
 import AuthPage from "./Pages/AuthPage/AuthPage";
+import NotFoundPage from "./Pages/NotFound Page/NotFoundPage";
 
 function App() {
   const client = new QueryClient();
@@ -13,7 +14,7 @@ function App() {
         <Routes>
           <Route path="/" element={<h1>Home</h1>} />
           <Route path="/auth" element={<AuthPage />} />
-          <Route path="*" element={<h1>Not Found</h1>} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
     </QueryClientProvider>

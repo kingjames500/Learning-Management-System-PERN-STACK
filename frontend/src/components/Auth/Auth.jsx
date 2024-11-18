@@ -16,9 +16,9 @@ import { useMutation } from "react-query";
 import apiUrl from "../../lib/apiUrl.js";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import userDetailsStore from "../Store/userStoreDetails.js";
 
 function Register() {
-  const redirect = useNavigate();
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -26,7 +26,7 @@ function Register() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const { mutate, isLoading, isError, error } = useMutation({
+  const { mutate, isLoading } = useMutation({
     mutationFn: async (registerUserData) => {
       const response = await fetch(`${apiUrl}/auth/register`, {
         method: "POST",
@@ -57,10 +57,6 @@ function Register() {
         duration: 3000,
         description: "You have successfully created an account",
       });
-
-      setTimeout(() => {
-        redirect("/auth/login");
-      }, 3000);
     },
   });
 
@@ -95,16 +91,28 @@ function Register() {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        {/* Email Input */}
-        <div className="space-y-1">
-          <Label className="text-indigo-600">Email</Label>
-          <Input
-            className="text-gray-900 placeholder-gray-400 border-indigo-300 focus:ring-indigo-500 focus:border-indigo-500"
-            type="email"
-            placeholder="Enter your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-1">
+            <Label className="text-indigo-600">Email</Label>
+            <Input
+              className="text-gray-900 placeholder-gray-400 border-indigo-300 focus:ring-indigo-500 focus:border-indigo-500"
+              type="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+          {/* Username Input */}
+          <div className="space-y-1">
+            <Label className="text-indigo-600">Username</Label>
+            <Input
+              className="text-gray-900 placeholder-gray-400 border-indigo-300 focus:ring-indigo-500 focus:border-indigo-500"
+              type="text"
+              placeholder="Enter your username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+          </div>
         </div>
 
         {/* First Name and Last Name */}
@@ -131,18 +139,6 @@ function Register() {
           </div>
         </div>
 
-        {/* Username Input */}
-        <div className="space-y-1">
-          <Label className="text-indigo-600">Username</Label>
-          <Input
-            className="text-gray-900 placeholder-gray-400 border-indigo-300 focus:ring-indigo-500 focus:border-indigo-500"
-            type="text"
-            placeholder="Enter your username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-        </div>
-
         {/* Password and Confirm Password */}
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-1">
@@ -167,13 +163,13 @@ function Register() {
           </div>
         </div>
       </CardContent>
-      <CardFooter className="flex justify-end">
+      <CardFooter className="justify-center">
         <Button
           className="px-6 py-2 text-white bg-indigo-600 rounded-md shadow-md hover:bg-indigo-700"
           disabled={isLoading}
           onClick={handleRegisterUser}
         >
-          {isLoading ? "Loading..." : "Register"}
+          {isLoading ? "Registering User..." : "Register"}
         </Button>
       </CardFooter>
     </Card>
@@ -183,9 +179,58 @@ function Register() {
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const setUser = userDetailsStore((state) => state.setUser);
+  const redirect = useNavigate();
+
+  const { mutate, isLoading } = useMutation({
+    mutationFn: async (loginUserData) => {
+      const response = await fetch(`${apiUrl}/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(loginUserData),
+      });
+
+      if (response.ok === false) {
+        const error = await response.json();
+        throw new Error(error.message);
+      }
+
+      const data = await response.json();
+      return data;
+    },
+
+    onSuccess: (data) => {
+      setUser(data.user);
+      toast.success(data.message, {
+        duration: 3000,
+      });
+      setTimeout(() => {
+        redirect("/");
+      }, 1000);
+    },
+
+    onError: (error) => {
+      toast.error(error.message, {
+        duration: 3000,
+      });
+    },
+  });
+
+  function handleLoginUser(event) {
+    event.preventDefault();
+    const loginUser = {
+      email,
+      password,
+    };
+
+    mutate(loginUser);
+  }
 
   return (
-    <Card className="p-6 mb-6 shadow-lg rounded-lg bg-white w-[450px]">
+    <Card className="p-6 mb-6 shadow-lg rounded-lg bg-white w-[500px]">
       <CardHeader>
         <CardTitle className="text-xl font-bold text-indigo-700">
           Login
@@ -217,8 +262,12 @@ function Login() {
         </div>
       </CardContent>
       <CardFooter className="flex justify-end">
-        <Button className="px-6 py-2 text-white bg-indigo-600 rounded-md shadow-md hover:bg-indigo-700">
-          Login
+        <Button
+          className="px-6 py-2 text-white bg-indigo-600 rounded-md shadow-md hover:bg-indigo-700"
+          disabled={isLoading}
+          onClick={handleLoginUser}
+        >
+          {isLoading ? "Logging in..." : "Login"}
         </Button>
       </CardFooter>
     </Card>

@@ -11,6 +11,9 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import React, { useContext } from "react";
 import { Switch } from "@/components/ui/switch";
+import apiUrl from "@/lib/apiUrl";
+import VideoPlayer from "@/components/Video/VideoPlayer";
+import { toast } from "sonner";
 
 function CourseCurriculum() {
   const { courseCurriculumFormData, setCourseCurriculumFormData } =
@@ -24,6 +27,54 @@ function CourseCurriculum() {
       },
     ]);
   }
+
+  //function for handling title states
+  function handleCourseTitleChange(event, currentIndex) {
+    let cpyCourseCurriculumFormData = [...courseCurriculumFormData];
+    cpyCourseCurriculumFormData[currentIndex] = {
+      ...cpyCourseCurriculumFormData[currentIndex],
+      title: event.target.value,
+    };
+    setCourseCurriculumFormData(cpyCourseCurriculumFormData);
+  }
+
+  // function for handling free preview states
+  function handleFreePreviewChange(currentValue, currentIndex) {
+    let cpyCourseCurriculumFormData = [...courseCurriculumFormData];
+    cpyCourseCurriculumFormData[currentIndex] = {
+      ...cpyCourseCurriculumFormData[currentIndex],
+      freePreview: currentValue,
+    };
+    setCourseCurriculumFormData(cpyCourseCurriculumFormData);
+  }
+
+  //function for handling video upload and setting video url and public id
+  async function handleSingleVideoUpload(event, currentIndex) {
+    const selectedFile = event.target.files[0];
+    if (selectedFile) {
+      const formVideoData = new FormData();
+      formVideoData.append("file", selectedFile);
+      try {
+        const response = await fetch(`${apiUrl}/upload`, {
+          method: "POST",
+          body: formVideoData,
+        });
+        const data = await response.json();
+        let cpyCourseCurriculumFormData = [...courseCurriculumFormData];
+        cpyCourseCurriculumFormData[currentIndex] = {
+          ...cpyCourseCurriculumFormData[currentIndex],
+          videoUrl: data.data?.secure_url,
+          publicId: data.data?.public_id,
+        };
+        setCourseCurriculumFormData(cpyCourseCurriculumFormData);
+      } catch (error) {
+        toast.error("There was an error uploading the video", {
+          duration: 3000,
+        });
+      }
+    }
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -42,21 +93,42 @@ function CourseCurriculum() {
                   name={`lecture-${index + 1}`}
                   placeholder="Enter lecture title"
                   className="max-w-96 mb-4"
+                  value={courseCurriculumFormData[index]?.title}
+                  onChange={(event) => handleCourseTitleChange(event, index)}
                 />
                 <div className="flex items-center space-x-2 mb-4">
-                  <Switch id={`freePreview-${index + 1}`} checked={false} />
+                  <Switch
+                    onCheckedChange={(value) =>
+                      handleFreePreviewChange(value, index)
+                    }
+                    checked={courseCurriculumFormData[index]?.freePreview}
+                    id={`freePreview-${index + 1}`}
+                  />
                   <Label htmlFor={`freePreview-${index + 1}`}>
                     Free Preview
                   </Label>
                 </div>
               </div>
               <div className="mb-4">
-                <Input
-                  type="file"
-                  accept="video/*"
-                  placeholder="Upload video"
-                  className="mb-2"
-                />
+                {courseCurriculumFormData[index]?.videoUrl ? (
+                  <div className="flex gap-3">
+                    <VideoPlayer
+                      url={courseCurriculumFormData[index]?.videoUrl}
+                      width="450px"
+                      height="200px"
+                    />
+                    <Button className="mb-2">Change Video</Button>
+                    <Button className="bg-red-500">Delete Video</Button>
+                  </div>
+                ) : (
+                  <Input
+                    type="file"
+                    accept="video/*"
+                    placeholder="Upload video"
+                    className="mb-2"
+                    onChange={(event) => handleSingleVideoUpload(event, index)}
+                  />
+                )}
               </div>
             </div>
           ))}
@@ -67,27 +139,59 @@ function CourseCurriculum() {
 }
 
 function CourseSettings() {
+  const { courseLandingFormData, setCourseLandingFormData } =
+    useContext(InstructorContext);
+
+  async function handleSingeImageUpload(event) {
+    const selectedFile = event.target.files[0];
+    if (selectedFile) {
+      const formImageData = new FormData();
+      formImageData.append("file", selectedFile);
+      try {
+        const response = await fetch(`${apiUrl}/upload`, {
+          method: "POST",
+          body: formImageData,
+        });
+        const data = await response.json();
+        setCourseLandingFormData({
+          ...courseLandingFormData,
+          image: data.data?.url,
+        });
+      } catch (error) {
+        toast.error("There was an error uploading the image", {
+          duration: 3000,
+        });
+      }
+    }
+  }
   return (
     <Card className="flex flex-1 flex-col p-6 bg-white shadow-lg rounded-lg">
       <CardHeader className="space-y-4">
         <CardTitle className="font-bold text-2xl text-gray-800">
           Course Settings
         </CardTitle>
-        <div className="space-y-2">
-          <Label
-            htmlFor="course-image"
-            className="text-lg font-medium text-gray-700"
-          >
-            Upload Course Image
-          </Label>
-          <Input
-            id="course-image"
-            type="file"
-            accept="image/*"
-            className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
       </CardHeader>
+      <CardContent>
+        {courseLandingFormData?.image ? (
+          <img src={courseLandingFormData?.image} alt="course" />
+        ) : (
+          <div className="space-y-2">
+            <Label
+              htmlFor="course-image"
+              className="text-lg font-medium text-gray-700"
+            >
+              Upload Course Image
+            </Label>
+            <Input
+              id="course-image"
+              type="file"
+              accept="image/*"
+              onChange={handleSingeImageUpload}
+              className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+        )}
+      </CardContent>
     </Card>
   );
 }
@@ -115,7 +219,7 @@ function CourseLandingPage() {
 
 function CoursesDetails() {
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-gray-50 rounded-lg shadow-md ">
+    <div className="max-w-4xl mx-auto p-6 bg-gray-50 rounded-lg shadow-md mt-5">
       <div className="flex justify-between">
         <h1 className="text-2xl font-bold text-gray-800 mb-4">
           Create New Course

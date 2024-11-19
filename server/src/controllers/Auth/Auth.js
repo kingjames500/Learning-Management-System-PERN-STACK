@@ -39,14 +39,14 @@ const authLoginUser = async (req, res) => {
     const user = await checkUserExist(email);
 
     if (!user) {
-      res.status(404).json({ message: "User not found" });
+      res.status(400).json({ message: "wrong email or password" });
       return;
     }
 
     const isPasswordMatch = await comparePassword(password, user.password);
 
     if (!isPasswordMatch) {
-      res.status(401).json({ message: "Invalid password" });
+      res.status(401).json({ message: "wrong username or email" });
       return;
     }
 

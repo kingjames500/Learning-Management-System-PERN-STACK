@@ -30,6 +30,7 @@ function Register() {
     mutationFn: async (registerUserData) => {
       const response = await fetch(`${apiUrl}/auth/register`, {
         method: "POST",
+
         headers: {
           "Content-Type": "application/json",
         },
@@ -48,7 +49,6 @@ function Register() {
     onError: (error) => {
       toast.error(error.message, {
         duration: 3000,
-        description: "there was an error while registering",
       });
     },
 
@@ -65,7 +65,6 @@ function Register() {
     if (password !== confirmPassword) {
       toast.error("Password mismatch", {
         duration: 1000,
-        description: "Password and confirm password do not match",
       });
       return;
     }
@@ -76,6 +75,7 @@ function Register() {
       lastName,
       username,
       password,
+      role: "student",
     };
 
     mutate(registerUser);
@@ -186,6 +186,7 @@ function Login() {
     mutationFn: async (loginUserData) => {
       const response = await fetch(`${apiUrl}/auth/login`, {
         method: "POST",
+
         headers: {
           "Content-Type": "application/json",
         },
@@ -208,7 +209,7 @@ function Login() {
         duration: 3000,
       });
       setTimeout(() => {
-        redirect("/");
+        redirect("/instructor");
       }, 1000);
     },
 

@@ -5,7 +5,9 @@ import { Toaster } from "sonner";
 import MainHeader from "./components/Header/MainHeader";
 import AuthPage from "./Pages/AuthPage/AuthPage";
 import NotFoundPage from "./Pages/NotFound Page/NotFoundPage";
+
 import InstructorPage from "./Pages/InstructorPage/InstructorPage";
+import CourseDetailsPage from "./Pages/CourseDetailsPage/CourseDetailsPage";
 
 function App() {
   const client = new QueryClient();
@@ -15,6 +17,10 @@ function App() {
         <Toaster position="top-center" richColors expand duration={300} />
         <MainHeader />
         <Routes>
+          <Route
+            path="/instructor/courses/new"
+            element={<CourseDetailsPage />}
+          />
           <Route path="/instructor" element={<InstructorPage />} />
           <Route path="/" element={<h1>Home</h1>} />
           <Route path="/auth" element={<AuthPage />} />

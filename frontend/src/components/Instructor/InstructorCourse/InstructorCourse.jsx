@@ -3,21 +3,28 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
 
-import React from "react";
+import { useNavigate } from "react-router-dom";
 
 function InstructorCourse() {
+  const redirect = useNavigate();
   return (
     <Card>
       <CardHeader className="flex justify-between flex-row items-center">
         <CardTitle className="text-2xl font-extrabold">All Courses</CardTitle>
-        <Button className="p-4">Create new Course</Button>
+        <Button
+          className="p-4"
+          onClick={() => {
+            redirect("/instructor/courses/new");
+          }}
+        >
+          Create new Course
+        </Button>
       </CardHeader>
       <CardContent>
         <div className="overflow-x-auto">

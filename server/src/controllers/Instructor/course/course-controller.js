@@ -50,9 +50,19 @@ const createCourse = async (req, res) => {
   }
 };
 
-const getAllCourses = async (_req, res)  => {
+const getAllCourses = async (req, res) => {
   try {
+    const userId = req.userId;
     const courses = await prisma.course.findMany({
+      where: {
+        instructorId: userId,
+      },
+      select: {
+        id: true,
+        title: true,
+        pricing: true,
+        level: true,
+      },
     });
 
     res.status(200).json({
@@ -60,9 +70,30 @@ const getAllCourses = async (_req, res)  => {
       courses: courses,
     });
   } catch (error) {
-    res.status(500).json({ message: "something went wrong!" });
+    res.status(500).json({ message: "internal server error" });
     return;
   }
-}
+};
 
-export {createCourse, getAllCourses};
+const deleteCourse = async (req, res) => {
+  try {
+    const { courseId } = req.params;
+    const userId = req.userId;
+
+    await prisma.course.delete({
+      where: {
+        id: courseId,
+        instructorId: userId,
+      },
+    });
+
+    res.status(200).json({
+      message: "Course deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).json({ message: "internal server error" });
+    return;
+  }
+};
+
+export { createCourse, getAllCourses, deleteCourse };

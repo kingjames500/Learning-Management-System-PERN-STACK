@@ -13,7 +13,11 @@ import {
   checkUserExist,
 } from "../helpers/checkEmailOrUsernameTakenCheck.js";
 
-import{createCourse, getAllCourses} from "../controllers/Instructor/course/course-controller.js";
+import {
+  createCourse,
+  getAllCourses,
+  deleteCourse,
+} from "../controllers/Instructor/course/course-controller.js";
 // helper functions are imported here and exported to be used in other files.
 import {
   uploadMediaToCloudinary,
@@ -27,6 +31,7 @@ export {
   PrismaClient,
   createCourse,
   getAllCourses,
+  deleteCourse,
   Router,
   comparePassword,
   authUserValidation,

@@ -50,4 +50,19 @@ const createCourse = async (req, res) => {
   }
 };
 
-export default createCourse;
+const getAllCourses = async (_req, res)  => {
+  try {
+    const courses = await prisma.course.findMany({
+    });
+
+    res.status(200).json({
+      message: "Courses fetched successfully",
+      courses: courses,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "something went wrong!" });
+    return;
+  }
+}
+
+export {createCourse, getAllCourses};

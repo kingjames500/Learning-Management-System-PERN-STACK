@@ -1,8 +1,32 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// // This is your Prisma schema file,
+// // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+// generator client {
+//   provider = "prisma-client-js"
+// }
+
+// datasource db {
+//   provider = "postgresql"
+//   url      = env("DATABASE_URL")
+// }
+
+// model User {
+//   id        String   @id @default(uuid())
+//   email     String   @unique
+//   firstName     String?
+//   lastName     String?
+//   username  String   @unique
+//   password  String
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+//   role String
+// }
+
+
+// schema.prisma
 
 generator client {
   provider = "prisma-client-js"
@@ -10,17 +34,58 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = env("DATABASE_URL")  // Database URL from .env file
+}
+
+model Lecture {
+  id         String @id @default(uuid())
+  title       String
+  videoUrl    String
+  public_id   String
+  freePreview Boolean
+  courseId    String
+  course      Course  @relation(fields: [courseId], references: [id])
+}
+
+model Course {
+  id              String           @id @default(uuid())
+  instructorId     String
+  instructorName   String
+  date             DateTime         @default(now())
+  title            String
+  category         String
+  level            String
+  primaryLanguage  String
+  subtitle         String?
+  description      String
+  image            String?
+  welcomeMessage   String?
+  pricing          String
+  objectives       String
+  isPublished      Boolean          @default(false)
+  curriculum       Lecture[]
+  students         CourseEnrollment[]
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  firstName     String?
-  lastName     String?
-  username  String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  role String
+  id              String              @id  @default(uuid())
+  firstName       String
+  lastName        String
+  username        String            @unique
+  email       String            @unique
+  password        String
+  role            String            // 'student', 'instructor', etc.
+  coursesEnrolled CourseEnrollment[]
 }
+
+model CourseEnrollment {
+  courseId String
+  userId   String
+  course   Course  @relation(fields: [courseId], references: [id])
+  user     User    @relation(fields: [userId], references: [id])
+  @@id([courseId, userId])
+}
+
+
+
+

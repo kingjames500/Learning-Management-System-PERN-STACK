@@ -10,10 +10,11 @@ const uploadMediaToCloudinary = async (filePath) => {
   try {
     const results = await cloudinary.uploader.upload(filePath, {
       resource_type: "auto",
+      folder: "Learning",
     });
     return results;
   } catch (error) {
-    resizeBy.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.message });
     return;
   }
 };
@@ -23,7 +24,7 @@ const deleteMediaFromCloudinary = async (publicId) => {
     const results = await cloudinary.uploader.destroy(publicId);
     return results;
   } catch (error) {
-    resizeBy.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.message });
     return;
   }
 };

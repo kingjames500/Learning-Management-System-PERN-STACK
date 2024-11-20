@@ -6,6 +6,8 @@ import dotenv from "dotenv";
 //import routes
 import authRoutes from "./Routes/Auth/authRouter.js";
 import cloudinaryUploads from "./Routes/CloudinaryMediaUpload/cloudinaryMedia.js";
+import courseRoutes from "./Routes/course/course-routes.js";
+import { verifyAuthToken } from "./imports/imports.js";
 
 const app = express();
 dotenv.config();
@@ -26,6 +28,8 @@ app.use(express.json());
 app.use("/api", authRoutes);
 app.use("/api", cloudinaryUploads);
 
+//course routes
+app.use("/api", verifyAuthToken, courseRoutes);
 app.listen(process.env.SERVER_PORT, () => {
   console.log(`Server is running on port ${process.env.SERVER_PORT}`);
 });

@@ -1,3 +1,4 @@
+import React from "react";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import {
@@ -11,12 +12,11 @@ import { Textarea } from "../ui/textarea";
 
 function FormControls({ formControls = [], formData, setFormData }) {
   function renderComponentByType(getControlItem) {
-    let element = null;
     const currentControlItemValue = formData[getControlItem.name] || "";
 
     switch (getControlItem.componentType) {
       case "input":
-        element = (
+        return (
           <Input
             id={getControlItem.name}
             name={getControlItem.name}
@@ -31,9 +31,8 @@ function FormControls({ formControls = [], formData, setFormData }) {
             }
           />
         );
-        break;
       case "select":
-        element = (
+        return (
           <Select
             onValueChange={(value) =>
               setFormData({
@@ -57,9 +56,8 @@ function FormControls({ formControls = [], formData, setFormData }) {
             </SelectContent>
           </Select>
         );
-        break;
       case "textarea":
-        element = (
+        return (
           <Textarea
             id={getControlItem.name}
             name={getControlItem.name}
@@ -73,10 +71,8 @@ function FormControls({ formControls = [], formData, setFormData }) {
             }
           />
         );
-        break;
-
       default:
-        element = (
+        return (
           <Input
             id={getControlItem.name}
             name={getControlItem.name}
@@ -91,18 +87,15 @@ function FormControls({ formControls = [], formData, setFormData }) {
             }
           />
         );
-        break;
     }
-
-    return element;
   }
 
   return (
     <div className="flex flex-col gap-3">
-      {formControls.map((controleItem) => (
-        <div key={controleItem.name}>
-          <Label htmlFor={controleItem.name}>{controleItem.label}</Label>
-          {renderComponentByType(controleItem)}
+      {formControls.map((controlItem) => (
+        <div key={controlItem.name}>
+          <Label htmlFor={controlItem.name}>{controlItem.label}</Label>
+          {renderComponentByType(controlItem)}
         </div>
       ))}
     </div>

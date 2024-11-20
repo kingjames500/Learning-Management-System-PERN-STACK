@@ -44,7 +44,7 @@ model Lecture {
   public_id   String
   freePreview Boolean
   courseId    String
-  course      Course  @relation(fields: [courseId], references: [id])
+  course      Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
 }
 
 model Course {
@@ -81,8 +81,8 @@ model User {
 model CourseEnrollment {
   courseId String
   userId   String
-  course   Course  @relation(fields: [courseId], references: [id])
-  user     User    @relation(fields: [userId], references: [id])
+  course   Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  user     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   @@id([courseId, userId])
 }
 

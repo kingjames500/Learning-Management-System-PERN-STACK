@@ -8,9 +8,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import apiUrl from "@/lib/apiUrl";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 function InstructorCourse() {
   const { data, isLoading, isError } = useQuery({
@@ -31,6 +32,36 @@ function InstructorCourse() {
     },
   });
 
+  //deleting a course
+  const queryClient = useQueryClient();
+
+  const deleteCourse = useMutation({
+    mutationFn: async (courseId) => {
+      console.log(courseId);
+      const response = await fetch(`${apiUrl}/delete-course/${courseId}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+
+      if (response.ok === false) {
+        const error = await response.json();
+        throw new Error(error.message);
+      }
+
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries("courses");
+      toast.success("Course deleted successfully", {
+        duration: 3000,
+      });
+    },
+    onError: (error) => {
+      toast.error(error.message, {
+        duration: 3000,
+      });
+    },
+  });
   const redirect = useNavigate();
 
   if (isLoading) {
@@ -83,7 +114,13 @@ function InstructorCourse() {
                   <TableCell className="p-4">{course.level}</TableCell>
                   <TableCell className="p-4 flex space-x-3">
                     <Button className="p-3 bg-green-500">Edit</Button>
-                    <Button className="p-2 bg-red-600">Delete</Button>
+                    <Button
+                      className="p-2 bg-red-600"
+                      onClick={() => deleteCourse.mutate(course.id)}
+                    >
+                      {" "}
+                      Delete
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}
@@ -94,7 +131,5 @@ function InstructorCourse() {
     </Card>
   );
 }
-
-
 
 export default InstructorCourse;

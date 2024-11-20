@@ -1,10 +1,7 @@
-
 import React from "react";
 
 function InstructorDashboard() {
-  return (
-<></>
-  );
+  return <></>;
 }
 
 export default InstructorDashboard;

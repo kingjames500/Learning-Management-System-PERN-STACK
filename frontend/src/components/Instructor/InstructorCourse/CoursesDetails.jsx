@@ -17,7 +17,7 @@ import VideoPlayer from "@/components/Video/VideoPlayer";
 import { toast } from "sonner";
 import userDetailsStore from "@/components/Store/userStoreDetails";
 import { useMutation } from "react-query";
-import { useParams } from "react-router-dom";
+import { redirect, useParams } from "react-router-dom";
 
 function CourseCurriculum() {
   const { courseCurriculumFormData, setCourseCurriculumFormData } =
@@ -357,7 +357,46 @@ function CoursesDetails() {
     },
   });
 
-  async function handleCreateCourse() {
+  //useuseMutation for updating course
+  const { mutate: updateCourse } = useMutation({
+    mutationFn: async ({ courseId, ...courseUpdateData }) => {
+      const response = await fetch(`${apiUrl}/update-course/${courseId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(courseUpdateData),
+      });
+
+      clg("response from updating course", response);
+
+      if (response.ok === false) {
+        const error = await response.json();
+        throw new Error(error.message);
+      }
+
+      const data = await response.json();
+
+      return data;
+    },
+    onSuccess: () => {
+      toast.success("Course updated successfully!", {
+        duration: 2000,
+      });
+      setTimeout(() => {
+        setCurrentEditedCourseId(null);
+        redirect("/instructor");
+      }, 2000);
+    },
+    onError: (error) => {
+      toast.error(error.message, {
+        duration: 2000,
+      });
+    },
+  });
+
+  async function handleCourseSubmit() {
     const finalCourseData = {
       instructorName: `${user.firstName} ${user.lastName}`,
       ...courseLandingFormData,
@@ -365,7 +404,16 @@ function CoursesDetails() {
       curriculum: courseCurriculumFormData,
     };
 
-    mutate(finalCourseData);
+    if (currentEditedCourseId) {
+      // Update course if course ID is present
+      updateCourse({
+        ...finalCourseData,
+        courseId: currentEditedCourseId, // Ensure the course ID is passed to update
+      });
+    } else {
+      // Create course if no course ID is provided
+      mutate(finalCourseData);
+    }
   }
 
   return (
@@ -377,9 +425,9 @@ function CoursesDetails() {
         <Button
           className="mb-4 px-4 py-2 bg-blue-600 text-white rounded-md shadow hover:bg-blue-700"
           // disabled={!validateFormData()}
-          onClick={handleCreateCourse}
+          onClick={handleCourseSubmit}
         >
-          Create Course
+          submit
         </Button>
       </div>
       <Tabs defaultValue="curriculum">

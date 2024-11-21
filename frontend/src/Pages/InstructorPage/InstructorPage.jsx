@@ -83,10 +83,10 @@ function InstructorPage() {
   function handleLogout() {}
 
   return (
-    <div className="flex h-full min-h-screen bg-gray-100">
+    <div className="flex h-full min-h-screen bg-white">
       <aside className="w-64 shadow-md flex flex-col items-start p-4 bg-white">
         <h2 className="text-2xl font-bold mb-4">Dashboard</h2>
-        <nav>
+        <nav className="w-full">
           {menuItems.map((item) => (
             <Button
               key={item.value}
@@ -103,16 +103,18 @@ function InstructorPage() {
           ))}
         </nav>
       </aside>
-      <main className="flex-1 overflow-y-auto">
-        <div className="max-w-2xl mx-auto">
-          <h1 className="text-3xl font-bold mb-8 mt-4 ">
-            Instructor Dashboard
-          </h1>
-          <Tabs value={activeTab} onChange={setActiveTab}>
+      <main className="flex-1 overflow-y-auto p-4 bg-gray-50">
+        <div className="w-full">
+          <h1 className="text-3xl font-bold mb-4">Instructor Dashboard</h1>
+          <Tabs value={activeTab} onChange={setActiveTab} className="w-full">
             {menuItems.map(
               (item) =>
                 item.Component !== null && (
-                  <TabsContent key={item.value} value={item.value}>
+                  <TabsContent
+                    key={item.value}
+                    value={item.value}
+                    className="w-full"
+                  >
                     {item.Component}
                   </TabsContent>
                 ),

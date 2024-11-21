@@ -1,6 +1,5 @@
+import React, { useContext, useState } from "react";
 import { Button } from "@/components/ui/button";
-import React, { useContext } from "react";
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -10,26 +9,47 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 import { useMutation, useQueryClient } from "react-query";
-import apiUrl from "@/lib/apiUrl";
-import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 import { InstructorContext } from "@/components/Context/Instructor/InstructorContext";
+import apiUrl from "@/lib/apiUrl";
+import {
+  courseCurriculumInitialFormData,
+  courseLandingInitialFormData,
+} from "@/config";
 
-function InstructorCourse({ listOfCourses }) {
-  const { setCurrentEditedCourseId } = useContext(InstructorContext);
+const ITEMS_PER_PAGE = 3;
 
-  //deleting a course
+function InstructorCourse({ listOfCourses = [] }) {
+  const {
+    setCurrentEditedCourseId,
+    setCourseCurriculumFormData,
+    setCourseLandingFormData,
+  } = useContext(InstructorContext);
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // Deleting a course mutation
   const queryClient = useQueryClient();
   const deleteCourse = useMutation({
     mutationFn: async (courseId) => {
-      console.log(courseId);
       const response = await fetch(`${apiUrl}/delete-course/${courseId}`, {
         method: "DELETE",
         credentials: "include",
       });
 
-      if (response.ok === false) {
+      if (!response.ok) {
         const error = await response.json();
         throw new Error(error.message);
       }
@@ -38,46 +58,45 @@ function InstructorCourse({ listOfCourses }) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries("courses");
-      toast.success("Course deleted successfully", {
-        duration: 3000,
-      });
+      toast.success("Course deleted successfully", { duration: 3000 });
     },
     onError: (error) => {
-      toast.error(error.message, {
-        duration: 3000,
-      });
+      toast.error(error.message, { duration: 3000 });
     },
   });
-  const redirect = useNavigate();
 
-  function handleRedirectToUpdateCourse(courseId) {
+  const navigate = useNavigate();
+
+  // Handlers for navigation
+  const handleRedirectToUpdateCourse = (courseId) => {
     if (courseId) {
-      redirect(`/instructor/course/edit/${courseId}`);
+      navigate(`/instructor/course/edit/${courseId}`);
     }
-    return;
-  }
+  };
 
-  function handleRedirectToCreateNewCourse() {
-    setCurrentEditedCourseId(null); // Clear the current course ID
-    console.log("redirecting to create new course");
-
-    // Use a timeout to ensure the state update takes effect
+  const handleRedirectToCreateNewCourse = () => {
+    setCurrentEditedCourseId(null);
+    setCourseLandingFormData(courseLandingInitialFormData);
+    setCourseCurriculumFormData(courseCurriculumInitialFormData);
     setTimeout(() => {
-      redirect("/instructor/courses/new");
-    }, 1000);
-  }
+      navigate("/instructor/courses/new");
+    }, 500);
+  };
 
-  // if (isLoading) {
-  //   return <div className="text-center mt-10">Loading...</div>;
-  // }
+  // Pagination logic
+  const totalPages = Math.ceil(listOfCourses.length / ITEMS_PER_PAGE);
+  const paginatedCourses = listOfCourses.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE,
+  );
 
-  // if (isError) {
-  //   return <div className="text-center mt-10">Error loading courses.</div>;
-  // }
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
 
   return (
-    <Card className="shadow-lg rounded-lg">
-      <CardHeader className="flex flex-col md:flex-row justify-between items-center p-6">
+    <Card>
+      <CardHeader className="flex flex-col md:flex-row justify-between items-center p-4">
         <CardTitle className="text-2xl font-bold">All Courses</CardTitle>
         <Button
           className="mt-4 md:mt-0 p-3"
@@ -86,7 +105,7 @@ function InstructorCourse({ listOfCourses }) {
           Create new Course
         </Button>
       </CardHeader>
-      <CardContent className="p-6">
+      <CardContent className="p-4">
         <div className="overflow-x-auto">
           <Table className="table-auto w-full">
             <TableHeader className="bg-gray-100">
@@ -106,8 +125,8 @@ function InstructorCourse({ listOfCourses }) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {listOfCourses && listOfCourses.length > 0 ? (
-                listOfCourses.map((course) => (
+              {paginatedCourses.length > 0 ? (
+                paginatedCourses.map((course) => (
                   <TableRow className="border-b" key={course?.id}>
                     <TableCell className="p-4 font-medium">
                       {course?.title}
@@ -131,11 +150,49 @@ function InstructorCourse({ listOfCourses }) {
                   </TableRow>
                 ))
               ) : (
-                <div className="text-center mt-10">No courses found.</div>
+                <TableRow>
+                  <TableCell
+                    colSpan={4}
+                    className="text-center p-4 font-medium"
+                  >
+                    No courses found.
+                  </TableCell>
+                </TableRow>
               )}
             </TableBody>
           </Table>
         </div>
+        <Pagination className="mt-4 flex justify-center">
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                href="#"
+                onClick={() => handlePageChange(Math.max(currentPage - 1, 1))}
+                disabled={currentPage === 1}
+              />
+            </PaginationItem>
+            {Array.from({ length: totalPages }, (_, index) => (
+              <PaginationItem key={index}>
+                <PaginationLink
+                  href="#"
+                  className={currentPage === index + 1 ? "font-bold" : ""}
+                  onClick={() => handlePageChange(index + 1)}
+                >
+                  {index + 1}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+            <PaginationItem>
+              <PaginationNext
+                href="#"
+                onClick={() =>
+                  handlePageChange(Math.min(currentPage + 1, totalPages))
+                }
+                disabled={currentPage === totalPages}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
       </CardContent>
     </Card>
   );

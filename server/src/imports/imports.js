@@ -27,12 +27,14 @@ import {
 } from "../helpers/cloudinary/cloudinary.js";
 
 import { getInstructorCourseCount } from "../controllers/Instructor/instructorCount.js";
+import getPopularCourses from "../controllers/Student/Course/studentCourse.js";
 
 // importing middleware for authToken
 import verifyAuthToken from "../middleware/AuthToken/authToken.js";
 
 export {
   PrismaClient,
+  getPopularCourses,
   getInstructorCourseCount,
   createCourse,
   getASingleCourse,

@@ -2,7 +2,7 @@ import React from "react";
 import { GraduationCap } from "lucide-react";
 import { Link } from "react-router-dom";
 
-const MainHeader = () => {
+const AdminHeader = () => {
   return (
     <header className="bg-white-600 text-indigo-600 shadow-sm p-4 flex justify-between items-center">
       <div className="flex items-center space-x-3">
@@ -26,4 +26,4 @@ const MainHeader = () => {
   );
 };
 
-export default MainHeader;
+export default AdminHeader;

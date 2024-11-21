@@ -16,7 +16,7 @@ import { useMutation } from "react-query";
 import apiUrl from "../../lib/apiUrl.js";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-import userDetailsStore from "../Store/userStoreDetails.js";
+import userDetailsStore from "@/Store/userStoreDetails.js";
 
 function Register() {
   const [email, setEmail] = useState("");
@@ -204,13 +204,22 @@ function Login() {
     },
 
     onSuccess: (data) => {
+      const role = "instructor";
+      console.log("first role", role);
       setUser(data.user);
+      console.log("user role on login", data.user.role);
       toast.success(data.message, {
         duration: 3000,
       });
-      setTimeout(() => {
-        redirect("/instructor");
-      }, 1000);
+      if (data.user.role === role) {
+        setTimeout(() => {
+          redirect("/instructor");
+        }, 1000);
+      } else {
+        setTimeout(() => {
+          redirect("/student");
+        }, 1000);
+      }
     },
 
     onError: (error) => {

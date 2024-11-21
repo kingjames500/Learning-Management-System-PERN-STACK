@@ -15,7 +15,7 @@ import { Switch } from "@/components/ui/switch";
 import apiUrl from "@/lib/apiUrl";
 import VideoPlayer from "@/components/Video/VideoPlayer";
 import { toast } from "sonner";
-import userDetailsStore from "@/components/Store/userStoreDetails";
+import userDetailsStore from "@/Store/userStoreDetails";
 import { useMutation } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
 

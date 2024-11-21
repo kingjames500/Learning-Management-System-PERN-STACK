@@ -1,4 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
+
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
+import { InstructorContext } from "@/components/Context/Instructor/InstructorContext";
+import apiUrl from "@/lib/apiUrl";
 import { BarChart, GraduationCap, LogOut, UserCircle } from "lucide-react";
 import InstructorDashboard from "@/components/Instructor/InstructorDashboard";
 import InstructorCourse from "@/components/Instructor/InstructorCourse/InstructorCourse";
@@ -6,35 +11,15 @@ import InstructorStudent from "@/components/Instructor/InstructorStudent/Instruc
 import InstructorAssignments from "@/components/Instructor/InstructorAssignments/InstructorAssignments";
 import InstructorAssesments from "@/components/Instructor/InstructorAssesments/InstructorAssesments";
 import InstructorGrades from "@/components/Instructor/InstructorGrades/InstructorGrades";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent } from "@/components/ui/tabs";
-import { InstructorContext } from "@/components/Context/Instructor/InstructorContext";
-import apiUrl from "@/lib/apiUrl";
+import userDetailsStore from "../../Store/userStoreDetails.js";
+import { useNavigate } from "react-router-dom";
 
 function InstructorPage() {
+  const redirect = useNavigate();
+  const logout = userDetailsStore((state) => state.logout);
   const [activeTab, setActiveTab] = useState("dashboard");
   const { instructorCourseList, setInstructorCourseList } =
     useContext(InstructorContext);
-
-  async function fetchAllCourses() {
-    const response = await fetch(`${apiUrl}/get-all-courses`, {
-      credentials: "include",
-    });
-
-    if (response.ok === false) {
-      const error = await response.json();
-      throw new Error(error.message);
-    }
-
-    const data = await response.json();
-    console.log(data);
-    setInstructorCourseList(data.courses);
-  }
-
-  useEffect(() => {
-    fetchAllCourses();
-  }, []);
-
   const menuItems = [
     {
       Icon: BarChart,
@@ -80,7 +65,29 @@ function InstructorPage() {
     },
   ];
 
-  function handleLogout() {}
+  async function fetchAllCourses() {
+    const response = await fetch(`${apiUrl}/get-all-courses`, {
+      credentials: "include",
+    });
+
+    if (response.ok === false) {
+      const error = await response.json();
+      throw new Error(error.message);
+    }
+
+    const data = await response.json();
+    console.log(data);
+    setInstructorCourseList(data.courses);
+  }
+
+  useEffect(() => {
+    fetchAllCourses();
+  }, []);
+
+  function handleLogout() {
+    logout();
+    redirect("/auth");
+  }
 
   return (
     <div className="flex h-full min-h-screen bg-white">

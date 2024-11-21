@@ -17,7 +17,7 @@ import VideoPlayer from "@/components/Video/VideoPlayer";
 import { toast } from "sonner";
 import userDetailsStore from "@/components/Store/userStoreDetails";
 import { useMutation } from "react-query";
-import { redirect, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 function CourseCurriculum() {
   const { courseCurriculumFormData, setCourseCurriculumFormData } =
@@ -247,6 +247,7 @@ function CoursesDetails() {
     setCurrentEditedCourseId,
   } = useContext(InstructorContext);
   const { courseId } = useParams();
+  const redirect = useNavigate();
 
   // useEffect for fetching course details for edit
   useEffect(() => {
@@ -369,7 +370,7 @@ function CoursesDetails() {
         body: JSON.stringify(courseUpdateData),
       });
 
-      clg("response from updating course", response);
+      console.log("response from updating course", response);
 
       if (response.ok === false) {
         const error = await response.json();
@@ -377,7 +378,6 @@ function CoursesDetails() {
       }
 
       const data = await response.json();
-
       return data;
     },
     onSuccess: () => {

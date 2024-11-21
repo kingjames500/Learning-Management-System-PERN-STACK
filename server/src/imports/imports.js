@@ -17,6 +17,8 @@ import {
   createCourse,
   getAllCourses,
   deleteCourse,
+  getASingleCourse,
+  updateCourse,
 } from "../controllers/Instructor/course/course-controller.js";
 // helper functions are imported here and exported to be used in other files.
 import {
@@ -24,12 +26,17 @@ import {
   deleteMediaFromCloudinary,
 } from "../helpers/cloudinary/cloudinary.js";
 
+import { getInstructorCourseCount } from "../controllers/Instructor/instructorCount.js";
+
 // importing middleware for authToken
 import verifyAuthToken from "../middleware/AuthToken/authToken.js";
 
 export {
   PrismaClient,
+  getInstructorCourseCount,
   createCourse,
+  getASingleCourse,
+  updateCourse,
   getAllCourses,
   deleteCourse,
   Router,

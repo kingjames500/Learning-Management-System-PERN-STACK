@@ -2,6 +2,7 @@ import FormControls from "@/components/common-form/Form-controls";
 import { InstructorContext } from "@/components/Context/Instructor/InstructorContext";
 import {
   courseCurriculumInitialFormData,
+  courseLandingInitialFormData,
   courseLandingPageFormControls,
 } from "@/config";
 import { Button } from "@/components/ui/button";
@@ -9,13 +10,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Switch } from "@/components/ui/switch";
 import apiUrl from "@/lib/apiUrl";
 import VideoPlayer from "@/components/Video/VideoPlayer";
 import { toast } from "sonner";
 import userDetailsStore from "@/components/Store/userStoreDetails";
 import { useMutation } from "react-query";
+import { useParams } from "react-router-dom";
 
 function CourseCurriculum() {
   const { courseCurriculumFormData, setCourseCurriculumFormData } =
@@ -236,8 +238,55 @@ function CourseLandingPage() {
 }
 
 function CoursesDetails() {
-  const { courseLandingFormData, courseCurriculumFormData } =
-    useContext(InstructorContext);
+  const {
+    courseLandingFormData,
+    setCourseLandingFormData,
+    courseCurriculumFormData,
+    setCourseCurriculumFormData,
+    currentEditedCourseId,
+    setCurrentEditedCourseId,
+  } = useContext(InstructorContext);
+  const { courseId } = useParams();
+
+  // useEffect for fetching course details for edit
+  useEffect(() => {
+    if (currentEditedCourseId !== null) fetchCourseDetailsForEdit();
+  }, [currentEditedCourseId]);
+
+  // aync function for fetching course details for edit
+  async function fetchCourseDetailsForEdit() {
+    const response = await fetch(`${apiUrl}/get-course/${courseId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+
+    if (response.ok === false) {
+      const error = await response.json();
+      throw new Error(error.message);
+    }
+    const data = await response.json();
+    if (data && data.course) {
+      const setCourseFormData = Object.keys(
+        courseLandingInitialFormData,
+      ).reduce((acc, key) => {
+        acc[key] = data?.course[key] || courseLandingInitialFormData[key];
+        return acc;
+      }, {});
+      setCourseLandingFormData(setCourseFormData);
+      setCourseCurriculumFormData(data.course.curriculum);
+    }
+  }
+
+  // useEffect for setting the current edited course id
+  useEffect(() => {
+    if (courseId) {
+      setCurrentEditedCourseId(courseId);
+    }
+  }, [courseId]);
+
   const user = userDetailsStore((state) => state.user);
   function isEmpty(value) {
     if (Array.isArray(value)) {
@@ -315,10 +364,10 @@ function CoursesDetails() {
       isPublished: true,
       curriculum: courseCurriculumFormData,
     };
-    console.log(finalCourseData);
 
     mutate(finalCourseData);
   }
+
   return (
     <div className="max-w-4xl mx-auto p-6 bg-gray-50 rounded-lg shadow-md mt-5">
       <div className="flex justify-between">
@@ -327,6 +376,7 @@ function CoursesDetails() {
         </h1>
         <Button
           className="mb-4 px-4 py-2 bg-blue-600 text-white rounded-md shadow hover:bg-blue-700"
+          // disabled={!validateFormData()}
           onClick={handleCreateCourse}
         >
           Create Course

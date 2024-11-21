@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { BarChart, GraduationCap, LogOut, UserCircle } from "lucide-react";
 import InstructorDashboard from "@/components/Instructor/InstructorDashboard";
 import InstructorCourse from "@/components/Instructor/InstructorCourse/InstructorCourse";
@@ -8,9 +8,32 @@ import InstructorAssesments from "@/components/Instructor/InstructorAssesments/I
 import InstructorGrades from "@/components/Instructor/InstructorGrades/InstructorGrades";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
+import { InstructorContext } from "@/components/Context/Instructor/InstructorContext";
+import apiUrl from "@/lib/apiUrl";
 
 function InstructorPage() {
   const [activeTab, setActiveTab] = useState("dashboard");
+  const { instructorCourseList, setInstructorCourseList } =
+    useContext(InstructorContext);
+
+  async function fetchAllCourses() {
+    const response = await fetch(`${apiUrl}/get-all-courses`, {
+      credentials: "include",
+    });
+
+    if (response.ok === false) {
+      const error = await response.json();
+      throw new Error(error.message);
+    }
+
+    const data = await response.json();
+    console.log(data);
+    setInstructorCourseList(data.courses);
+  }
+
+  useEffect(() => {
+    fetchAllCourses();
+  }, []);
 
   const menuItems = [
     {
@@ -23,7 +46,7 @@ function InstructorPage() {
       Icon: GraduationCap,
       Label: "Courses",
       value: "courses",
-      Component: <InstructorCourse />,
+      Component: <InstructorCourse listOfCourses={instructorCourseList} />,
     },
     {
       Icon: UserCircle,

@@ -21,6 +21,10 @@ function App() {
             path="/instructor/courses/new"
             element={<CourseDetailsPage />}
           />
+          <Route
+            path="/instructor/course/edit/:courseId"
+            element={<CourseDetailsPage />}
+          />
           <Route path="/instructor" element={<InstructorPage />} />
           <Route path="/" element={<h1>Home</h1>} />
           <Route path="/auth" element={<AuthPage />} />

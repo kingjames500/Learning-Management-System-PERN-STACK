@@ -9,18 +9,23 @@ import StudentHomePage from "./components/Student/StudentHomePage";
 import InstructorPage from "./Pages/InstructorPage/InstructorPage";
 import CourseDetailsPage from "./Pages/CourseDetailsPage/CourseDetailsPage";
 import HomePage from "./Pages/Homepage/HomePage";
+import QenerateAssignment from "./components/Instructor/InstructorAssignments/QenerateAssignment";
 
 function App() {
   const client = new QueryClient();
   return (
     <QueryClientProvider client={client}>
       <BrowserRouter>
-        <Toaster position="top-center" richColors expand />
+        <Toaster position="top-center" richColors duration={2000} />
         <Header />
         <Routes>
           <Route
             path="/instructor/courses/new"
             element={<CourseDetailsPage />}
+          />
+          <Route
+            path="/instructor/assignment"
+            element={<QenerateAssignment />}
           />
           <Route
             path="/instructor/course/edit/:courseId"

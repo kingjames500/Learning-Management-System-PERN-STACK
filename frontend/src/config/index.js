@@ -74,6 +74,16 @@ export const courseCategories = [
   { id: "software-engineering", label: "Software Engineering" },
 ];
 
+export const assignmentTypes = [
+  {
+    name: "Assignment",
+    label: "Assignment",
+    componentType: "input",
+    type: "text",
+    placeholder: "Enter question you want to generate",
+  },
+];
+
 export const courseLandingPageFormControls = [
   {
     name: "title",

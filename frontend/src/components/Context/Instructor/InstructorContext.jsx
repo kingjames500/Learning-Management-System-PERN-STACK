@@ -24,9 +24,13 @@ export default function InstructorProvider({ children }) {
 
   const [currentEditedCourseId, setCurrentEditedCourseId] = useState(null);
 
+  const [questionsGenerated, setQuestionsGenerated] = useState([]);
+
   return (
     <InstructorContext.Provider
       value={{
+        questionsGenerated,
+        setQuestionsGenerated,
         currentEditedCourseId,
         setCurrentEditedCourseId,
         instructorCourseList,

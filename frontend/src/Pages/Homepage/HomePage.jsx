@@ -6,9 +6,7 @@ const HomePage = () => {
   const { data, isLoading, error } = useQuery({
     queryKey: "popularCourses",
     queryFn: async () => {
-      const res = await fetch(`${apiUrl}/home/popular-courses`, {
-        credentials: "include",
-      });
+      const res = await fetch(`${apiUrl}/home/popular-courses`);
 
       if (!res.ok) {
         const error = await res.json();

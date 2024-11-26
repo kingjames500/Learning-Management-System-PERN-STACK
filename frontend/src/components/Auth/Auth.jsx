@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -17,6 +17,7 @@ import apiUrl from "../../lib/apiUrl.js";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import userDetailsStore from "@/Store/userStoreDetails.js";
+import { AuthContext } from "../Context/authContext/authContext.jsx";
 
 function Register() {
   const [email, setEmail] = useState("");
@@ -179,6 +180,7 @@ function Register() {
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { setAuth } = useContext(AuthContext);
   const setUser = userDetailsStore((state) => state.setUser);
   const redirect = useNavigate();
 
@@ -202,26 +204,25 @@ function Login() {
       const data = await response.json();
       return data;
     },
-
     onSuccess: (data) => {
-      const role = "instructor";
-      console.log("first role", role);
-      setUser(data.user);
-      console.log("user role on login", data.user.role);
-      toast.success(data.message, {
-        duration: 3000,
+      setAuth({
+        authenticate: true,
+        user: data.user,
+        role: data.user.role,
       });
-      if (data.user.role === role) {
-        setTimeout(() => {
-          redirect("/instructor");
-        }, 1000);
-      } else {
-        setTimeout(() => {
-          redirect("/student");
-        }, 1000);
-      }
-    },
+      setUser({ ...data.user, role: undefined });
+      toast.success("Login successful");
 
+      setTimeout(() => {
+        if (data.user.role === "instructor") {
+          redirect("/instructor-homepage");
+        } else if (data.user.role === "student") {
+          redirect("/student-homepage");
+        } else {
+          redirect("/home");
+        }
+      }, 1000);
+    },
     onError: (error) => {
       toast.error(error.message, {
         duration: 3000,

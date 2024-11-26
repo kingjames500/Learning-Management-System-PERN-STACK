@@ -10,10 +10,10 @@ function userStore(set) {
         return { user: userObj };
       });
     },
-    logout: function () {
-      set((_set) => {
-        return { user: null };
-      });
+
+    logout: (callback) => {
+      if (callback) callback();
+      return { user: null };
     },
   };
 }

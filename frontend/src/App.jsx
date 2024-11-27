@@ -53,7 +53,14 @@ function App() {
             }
           />
 
-          <Route path="/student" element={<StudentHomePage />} />
+          <Route
+            path="/student"
+            element={
+              <ProtectedRoute role="student">
+                <StudentHomePage />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/" element={<HomePage />} />
           <Route path="/auth" element={<AuthPage />} />
           <Route path="*" element={<NotFoundPage />} />

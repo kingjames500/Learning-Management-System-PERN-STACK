@@ -1,20 +1,13 @@
 import { GraduationCap, TvMinimalPlay } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
-import { Button } from "../ui/button";
 import { useContext } from "react";
+
+import { Link, redirect } from "react-router-dom";
 import { AuthContext } from "../Context/authContext/authContext";
-import userDetailsStore from "@/Store/userStoreDetails";
+import logout from "@/lib/logout";
 
 function StudentHeader() {
-  const redirect = useNavigate();
   const { auth } = useContext(AuthContext);
-  const logout = userDetailsStore((state) => state.logout);
-
-  const handleLogout = () => {
-    logout();
-    redirect("/auth");
-  };
-
+  const { handleLogout } = logout();
   return (
     <header className="flex items-center justify-between p-4 border-b relative">
       <div className="flex items-center space-x-4">
@@ -25,18 +18,18 @@ function StudentHeader() {
           </span>
         </Link>
         <div className="flex items-center space-x-1">
-          <Button
-            variant="ghost"
-            className="text-[14px] md:text-[16px] font-medium"
+          <Link
+            to="/courses"
+            className="text-[14px] md:text-[16px] font-medium hover:text-black"
           >
             Explore Courses
-          </Button>
+          </Link>
         </div>
       </div>
       <div className="flex items-center space-x-4">
         {auth.authenticate ? (
           <>
-            {auth.role === "student" && (
+            {auth.role === "student" && auth.user && (
               <div className="flex gap-4 items-center">
                 <div
                   onClick={() => redirect("/student-courses")}
@@ -47,14 +40,27 @@ function StudentHeader() {
                   </span>
                   <TvMinimalPlay className="w-8 h-8 cursor-pointer" />
                 </div>
-                <Button onClick={() => redirect("/profile")}>Profile</Button>
-                <Button onClick={handleLogout}>Sign Out</Button>
+                <Link to="/profile" className="hover:text-black">
+                  {auth.user.username}
+                </Link>
+                <Link
+                  to="/auth"
+                  className="hover:text-black"
+                  onClick={() => {
+                    // Prevent default link behavior
+                    logout;
+                  }}
+                >
+                  Logout
+                </Link>
               </div>
             )}
           </>
         ) : (
           <div className="flex gap-4 items-center">
-            <Button onClick={() => redirect("/auth")}>Login</Button>
+            <Link to="/auth" className="hover:text-black">
+              Login
+            </Link>
           </div>
         )}
       </div>

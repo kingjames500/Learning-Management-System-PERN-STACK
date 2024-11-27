@@ -3,33 +3,33 @@ import apiUrl from "@/lib/apiUrl";
 import { useQuery } from "react-query";
 
 const HomePage = () => {
-  const { data, isLoading, error } = useQuery({
-    queryKey: "popularCourses",
-    queryFn: async () => {
-      const res = await fetch(`${apiUrl}/home/popular-courses`);
+  // const { data, isLoading, error } = useQuery({
+  //   queryKey: "popularCourses",
+  //   queryFn: async () => {
+  //     const res = await fetch(`${apiUrl}/home/popular-courses`);
 
-      if (!res.ok) {
-        const error = await res.json();
-        throw new Error(error.message);
-      }
+  //     if (!res.ok) {
+  //       const error = await res.json();
+  //       throw new Error(error.message);
+  //     }
 
-      const data = await res.json();
-      return data.popularCourse; // Assuming this is the array of courses
-    },
-    cacheTime: Infinity,
-  });
+  //     const data = await res.json();
+  //     return data.popularCourse; // Assuming this is the array of courses
+  //   },
+  //   cacheTime: Infinity,
+  // });
 
-  if (isLoading) {
-    return <div className="text-center py-12">Loading courses...</div>;
-  }
+  // if (isLoading) {
+  //   return <div className="text-center py-12">Loading courses...</div>;
+  // }
 
-  if (error) {
-    return (
-      <div className="text-center py-12 text-red-500">
-        Failed to load courses: {error.message}
-      </div>
-    );
-  }
+  // if (error) {
+  //   return (
+  //     <div className="text-center py-12 text-red-500">
+  //       Failed to load courses: {error.message}
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="bg-gray-100 mt-5">
@@ -56,35 +56,35 @@ const HomePage = () => {
           Popular Courses
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {data.map((course) => (
-            <div
-              key={course.id} // Use a unique identifier for each course
-              className="bg-white shadow-md rounded-lg overflow-hidden"
-            >
-              <img
-                src={course.image} // Ensure your API provides this field
-                alt={course.subtitle}
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-800">
-                  {course.subtitle}
-                </h3>
-                <p className="text-gray-600 mt-2">{course.title}</p>
-                <div className="flex justify-between items-center mt-4">
-                  <span className="text-gray-800 font-bold">
-                    ${course.pricing}
-                  </span>
-                  <a
-                    href={`/courses/${course.id}`} // Link to the course page
-                    className="bg-blue-500 text-white px-4 py-2 rounded"
-                  >
-                    Enroll
-                  </a>
-                </div>
+          {/* {data.map((course) => ( */}
+          <div
+            // key={course.id} // Use a unique identifier for each course
+            className="bg-white shadow-md rounded-lg overflow-hidden"
+          >
+            <img
+              // src={course.image} // Ensure your API provides this field
+              // alt={course.subtitle}
+              className="w-full h-48 object-cover"
+            />
+            <div className="p-6">
+              <h3 className="text-xl font-bold text-gray-800">
+                {/* {course.subtitle} */}
+              </h3>
+              <p className="text-gray-600 mt-2">{course.title}</p>
+              <div className="flex justify-between items-center mt-4">
+                <span className="text-gray-800 font-bold">
+                  {/* ${course.pricing} */}
+                </span>
+                <a
+                  // href={`/courses/${course.id}`} // Link to the course page
+                  className="bg-blue-500 text-white px-4 py-2 rounded"
+                >
+                  Enroll
+                </a>
               </div>
             </div>
-          ))}
+          </div>
+          {/* ))} */}
         </div>
       </section>
 

@@ -215,11 +215,9 @@ function Login() {
 
       setTimeout(() => {
         if (data.user.role === "instructor") {
-          redirect("/instructor-homepage");
-        } else if (data.user.role === "student") {
-          redirect("/student-homepage");
+          redirect("/instructor");
         } else {
-          redirect("/home");
+          redirect("/student");
         }
       }, 1000);
     },

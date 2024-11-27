@@ -1,10 +1,15 @@
-import userDetailsStore from "@/Store/userStoreDetails";
+import { useContext } from "react";
 import AdminHeader from "./AdminHeader";
 import StudentHeader from "./StudentHeader";
-import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { AuthContext } from "../Context/authContext/authContext";
+
 function Header() {
-  <StudentHeader />;
+  const { auth } = useContext(AuthContext);
+  console.log(auth.role);
+
+  return (
+    <> {auth.role === "instructor" ? <AdminHeader /> : <StudentHeader />} </>
+  );
 }
 
 export default Header;

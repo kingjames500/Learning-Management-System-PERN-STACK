@@ -11,10 +11,17 @@ function userStore(set) {
       });
     },
 
-    logout: (callback) => {
-      if (callback) callback();
-      return { user: null };
-    },
+    // logout: function () {
+    //   set((_set) => {
+    //     return { user: null };
+    //   });
+    // },
+
+    logout: (callback) =>
+      set(() => {
+        if (callback) callback();
+        return { user: null };
+      }),
   };
 }
 

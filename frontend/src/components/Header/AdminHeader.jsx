@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { GraduationCap } from "lucide-react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../Context/authContext/authContext";
+
 // Ensure the correct path
 
 const AdminHeader = () => {
@@ -29,7 +30,9 @@ const AdminHeader = () => {
             <Link
               to="/logout"
               className="hover:text-slate-800"
-              onClick={handleLogout}
+              onClick={() => {
+                handleLogout();
+              }}
             >
               Logout
             </Link>

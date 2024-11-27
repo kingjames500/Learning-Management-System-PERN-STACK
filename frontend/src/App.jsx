@@ -10,6 +10,7 @@ import InstructorPage from "./Pages/InstructorPage/InstructorPage";
 import CourseDetailsPage from "./Pages/CourseDetailsPage/CourseDetailsPage";
 import HomePage from "./Pages/Homepage/HomePage";
 import QenerateAssignment from "./components/Instructor/InstructorAssignments/QenerateAssignment";
+import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 
 function App() {
   const client = new QueryClient();
@@ -21,19 +22,38 @@ function App() {
         <Routes>
           <Route
             path="/instructor/courses/new"
-            element={<CourseDetailsPage />}
+            element={
+              <ProtectedRoute role="instructor">
+                <CourseDetailsPage />
+              </ProtectedRoute>
+            }
           />
           <Route
             path="/instructor/assignment"
-            element={<QenerateAssignment />}
+            element={
+              <ProtectedRoute role="instructor">
+                <QenerateAssignment />
+              </ProtectedRoute>
+            }
           />
           <Route
             path="/instructor/course/edit/:courseId"
-            element={<CourseDetailsPage />}
+            element={
+              <ProtectedRoute role="instructor">
+                <CourseDetailsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/instructor"
+            element={
+              <ProtectedRoute role="instructor">
+                <InstructorPage />
+              </ProtectedRoute>
+            }
           />
 
           <Route path="/student" element={<StudentHomePage />} />
-          <Route path="/instructor" element={<InstructorPage />} />
           <Route path="/" element={<HomePage />} />
           <Route path="/auth" element={<AuthPage />} />
           <Route path="*" element={<NotFoundPage />} />

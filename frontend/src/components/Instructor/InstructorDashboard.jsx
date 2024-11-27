@@ -54,7 +54,7 @@ function InstructorDashboard() {
               )}
               <Button
                 className="mt-4"
-                onClick={() => (window.location.href = card.link)}
+                // onClick={() => (window.location.href = card.link)}
               >
                 {card.action}
               </Button>

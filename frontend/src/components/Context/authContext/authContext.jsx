@@ -9,6 +9,7 @@ export default function AuthProvider({ children }) {
     user: null,
     role: null,
   });
+
   return (
     <AuthContext.Provider
       value={{

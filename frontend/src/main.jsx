@@ -4,13 +4,16 @@ import "./index.css";
 import App from "./App.jsx";
 import InstructorProvider from "./components/Context/Instructor/InstructorContext";
 import AuthProvider from "./components/Context/authContext/authContext";
+import StudentProvider from "./components/Context/StudentContext/StudentContext";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <AuthProvider>
-      <InstructorProvider>
-        <App />
-      </InstructorProvider>
+      <StudentProvider>
+        <InstructorProvider>
+          <App />
+        </InstructorProvider>
+      </StudentProvider>
     </AuthProvider>
   </StrictMode>,
 );

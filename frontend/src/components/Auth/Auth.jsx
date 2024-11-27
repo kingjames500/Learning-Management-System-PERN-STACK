@@ -285,7 +285,7 @@ function Login() {
 
 function Auth() {
   return (
-    <Tabs defaultValue="register" className="w-[500px] mx-auto mt-10">
+    <Tabs defaultValue="login" className="w-[500px] mx-auto mt-10">
       <TabsList className="flex space-x-2">
         <TabsTrigger
           value="register"

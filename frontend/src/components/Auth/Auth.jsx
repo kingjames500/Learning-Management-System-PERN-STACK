@@ -210,7 +210,7 @@ function Login() {
         user: data.user,
         role: data.user.role,
       });
-      setUser({ ...data.user, role: undefined });
+      setUser({ ...data.user });
       toast.success("Login successful");
 
       setTimeout(() => {

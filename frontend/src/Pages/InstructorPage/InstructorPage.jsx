@@ -11,12 +11,13 @@ import InstructorStudent from "@/components/Instructor/InstructorStudent/Instruc
 import InstructorAssignments from "@/components/Instructor/InstructorAssignments/InstructorAssignments";
 import InstructorAssesments from "@/components/Instructor/InstructorAssesments/InstructorAssesments";
 import InstructorGrades from "@/components/Instructor/InstructorGrades/InstructorGrades";
-import userDetailsStore from "../../Store/userStoreDetails.js";
+
 import { useNavigate } from "react-router-dom";
+import useLogout from "@/lib/logout";
 
 function InstructorPage() {
   const redirect = useNavigate();
-  const logout = userDetailsStore((state) => state.logout);
+  const logout = useLogout();
   const [activeTab, setActiveTab] = useState("dashboard");
   const { instructorCourseList, setInstructorCourseList } =
     useContext(InstructorContext);
@@ -76,7 +77,6 @@ function InstructorPage() {
     }
 
     const data = await response.json();
-    console.log(data);
     setInstructorCourseList(data.courses);
   }
 
@@ -84,9 +84,8 @@ function InstructorPage() {
     fetchAllCourses();
   }, []);
 
-  function handleLogout() {
-    logout();
-    redirect("/auth");
+  function handleLogoutButton() {
+    logout.handleLogout();
   }
 
   return (
@@ -100,7 +99,7 @@ function InstructorPage() {
               className="w-full justify-start mb-4"
               onClick={
                 item.value === "logout"
-                  ? handleLogout
+                  ? handleLogoutButton
                   : () => setActiveTab(item.value)
               }
             >

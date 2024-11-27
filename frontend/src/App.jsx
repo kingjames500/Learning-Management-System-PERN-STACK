@@ -5,12 +5,13 @@ import { Toaster } from "sonner";
 import Header from "./components/Header/Header";
 import AuthPage from "./Pages/AuthPage/AuthPage";
 import NotFoundPage from "./Pages/NotFound Page/NotFoundPage";
-import StudentHomePage from "./components/Student/StudentHomePage";
 import InstructorPage from "./Pages/InstructorPage/InstructorPage";
 import CourseDetailsPage from "./Pages/CourseDetailsPage/CourseDetailsPage";
 import HomePage from "./Pages/Homepage/HomePage";
 import QenerateAssignment from "./components/Instructor/InstructorAssignments/QenerateAssignment";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
+import StudentViewCoursePage from "./Pages/Student/StudentViewCoursePage/StudentViewCoursePage";
+import StudentHomePage from "./Pages/Student/Home/StudentHomePage";
 
 function App() {
   const client = new QueryClient();
@@ -52,7 +53,15 @@ function App() {
               </ProtectedRoute>
             }
           />
-
+          {/* Student routes */}
+          <Route
+            path="/course/:courseId"
+            element={
+              <ProtectedRoute role="student">
+                <StudentViewCoursePage />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/student"
             element={

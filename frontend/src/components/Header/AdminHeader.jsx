@@ -23,20 +23,9 @@ const AdminHeader = () => {
           Courses
         </Link>
         {auth.authenticate && auth.role === "instructor" ? (
-          <>
-            <Link to="/profile" className="hover:text-slate-800">
-              Profile
-            </Link>
-            <Link
-              to="/logout"
-              className="hover:text-slate-800"
-              onClick={() => {
-                handleLogout();
-              }}
-            >
-              Logout
-            </Link>
-          </>
+          <Link to="/profile" className="hover:text-slate-800">
+            Profile
+          </Link>
         ) : (
           <Link to="/auth" className="hover:text-slate-800">
             Login

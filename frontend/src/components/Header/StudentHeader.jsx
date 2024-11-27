@@ -3,11 +3,11 @@ import { useContext } from "react";
 
 import { Link, redirect } from "react-router-dom";
 import { AuthContext } from "../Context/authContext/authContext";
-import logout from "@/lib/logout";
+import useLogout from "@/lib/logout";
 
 function StudentHeader() {
   const { auth } = useContext(AuthContext);
-  const { handleLogout } = logout();
+  const logout = useLogout();
   return (
     <header className="flex items-center justify-between p-4 border-b relative">
       <div className="flex items-center space-x-4">
@@ -47,8 +47,7 @@ function StudentHeader() {
                   to="/auth"
                   className="hover:text-black"
                   onClick={() => {
-                    // Prevent default link behavior
-                    logout;
+                    logout.handleLogout();
                   }}
                 >
                   Logout

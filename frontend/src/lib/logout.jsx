@@ -1,26 +1,35 @@
 import { AuthContext } from "@/components/Context/authContext/authContext";
 import userDetailsStore from "@/Store/userStoreDetails";
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
-function logout() {
+function useLogout() {
   const redirect = useNavigate();
   const { setAuth } = useContext(AuthContext);
-  const logout = userDetailsStore((state) => state.logout);
+  const logoutZustand = userDetailsStore((state) => state.logout); // Zustand logout function
 
   const handleLogout = () => {
-    logout(() => {
-      console.log("logout hit");
+    // Call Zustand logout and execute callback
+    logoutZustand(() => {
+      console.log("Logout hit");
+
+      // Clear AuthContext state
       setAuth({
         authenticate: false,
         user: null,
         role: null,
       });
-      redirect("/auth");
+
+      // Redirect to login or auth page
+      toast.success("Logout successful. Redirecting to login page...");
+      setTimeout(() => {
+        redirect("/auth");
+      }, 1000);
     });
   };
 
   return { handleLogout };
 }
 
-export default logout;
+export default useLogout;

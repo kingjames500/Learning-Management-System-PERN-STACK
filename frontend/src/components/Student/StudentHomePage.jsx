@@ -1,37 +1,78 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 function StudentHomePage() {
-  return (
-    <div>
-      <div>
-        <h1>Welcome to the Student Home Page</h1>
-        <p>This is where you can find all your course materials and updates.</p>
-      </div>
+  const navigate = useNavigate();
 
-      <div>
-        <h2>Your Courses</h2>
-        <ul>
-          <li>Course 1: Introduction to Programming</li>
-          <li>Course 2: Data Structures and Algorithms</li>
-          <li>Course 3: Web Development</li>
-          <li>Course 4: Database Management</li>
-        </ul>
-      </div>
-      <div>
-        <h2>Upcoming Assignments</h2>
-        <ul>
-          <li>Assignment 1: Due on 10/10/2023</li>
-          <li>Assignment 2: Due on 10/17/2023</li>
-          <li>Assignment 3: Due on 10/24/2023</li>
-        </ul>
-      </div>
-      <div>
-        <h2>Recent Announcements</h2>
-        <ul>
-          <li>Announcement 1: New course materials available</li>
-          <li>Announcement 2: Midterm exam schedule released</li>
-          <li>Announcement 3: Guest lecture on 10/15/2023</li>
-        </ul>
+  const courses = [
+    {
+      id: 1,
+      title: "Web Development Bootcamp",
+      instructor: "Jane Doe",
+      price: "$200",
+      image: "https://images.unsplash.com/photo-1622838320004-4b3b3b3b3b3b",
+    },
+    {
+      id: 2,
+      title: "Introduction to Data Science",
+      instructor: "John Smith",
+      price: "$150",
+      image: "https://images.unsplash.com/photo-1617191516005-fd8e2f103e6d",
+    },
+    {
+      id: 3,
+      title: "Advanced UI/UX Design",
+      instructor: "Alice Johnson",
+      price: "$180",
+      image: "https://images.unsplash.com/photo-1610986605341-df4488c344fb",
+    },
+    // Add more courses as needed
+  ];
+
+  const handleCardClick = (courseId) => {
+    navigate(`/courses/${courseId}`);
+  };
+
+  return (
+    <div className="container mx-auto p-4">
+      <h1 className="text-3xl font-bold mb-6 text-center">
+        All Courses Available
+      </h1>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {courses.length > 0 ? (
+          courses.map((course) => (
+            <div
+              key={course.id}
+              onClick={() => handleCardClick(course.id)}
+              className="bg-white border border-gray-200 rounded-lg shadow hover:shadow-lg cursor-pointer transition"
+            >
+              <img
+                src={course.image}
+                alt={course.title}
+                className="w-full h-40 object-cover rounded-t-lg"
+              />
+              <div className="p-4">
+                <h2 className="text-xl font-semibold text-gray-800 mb-2">
+                  {course.title}
+                </h2>
+                <p className="text-sm text-gray-600 mb-2">
+                  Created By:{" "}
+                  <span className="font-medium text-gray-700">
+                    {course.instructor}
+                  </span>
+                </p>
+                <p className="text-lg font-bold text-gray-800">
+                  {course.price}
+                </p>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="col-span-full text-center">
+            <h1 className="font-extrabold text-4xl">No Courses Found</h1>
+          </div>
+        )}
       </div>
     </div>
   );

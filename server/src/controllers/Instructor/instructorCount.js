@@ -13,7 +13,6 @@ const getInstructorCourseCount = async (req, res) => {
     });
 
     res.status(200).json({ count: courseCount });
-    console.log(courseCount);
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch course count" });
   }

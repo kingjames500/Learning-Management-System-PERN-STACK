@@ -7,7 +7,6 @@ import {
   deleteCourse,
   getInstructorCourseCount,
   verifyAuthToken,
-  getPopularCourses,
 } from "../../imports/imports.js";
 
 const router = Router();
@@ -18,9 +17,6 @@ router.put("/update-course/:courseId", verifyAuthToken, updateCourse);
 router.get("/get-course/:courseId", verifyAuthToken, getASingleCourse);
 router.get("/get-all-courses", verifyAuthToken, getAllCourses);
 router.delete("/delete-course/:courseId", verifyAuthToken, deleteCourse);
-
-//homepage course routes
-router.get("/home/popular-courses", getPopularCourses);
 
 // other routes for instructor courses
 router.get(

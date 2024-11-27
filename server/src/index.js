@@ -7,7 +7,9 @@ import dotenv from "dotenv";
 import authRoutes from "./Routes/Auth/authRouter.js";
 import cloudinaryUploads from "./Routes/CloudinaryMediaUpload/cloudinaryMedia.js";
 import courseRoutes from "./Routes/course/course-routes.js";
+import assignmentGen from "./Routes/openai.js";
 import { verifyAuthToken } from "./imports/imports.js";
+import studentCourseRoutes from "./Routes/course/student/student-course-routes.js";
 
 const app = express();
 dotenv.config();
@@ -24,9 +26,14 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.json());
 
+app.use("/api", assignmentGen);
+
 // Routes for the server only
 app.use("/api", authRoutes);
 app.use("/api", cloudinaryUploads);
+
+// student course routes
+app.use("/api", studentCourseRoutes);
 
 //course routes
 app.use("/api", verifyAuthToken, courseRoutes);

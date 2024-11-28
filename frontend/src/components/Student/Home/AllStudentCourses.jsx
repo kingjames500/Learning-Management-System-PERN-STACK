@@ -9,13 +9,13 @@ const fetchCoursesToBeViewedByStudents = async () => {
     const response = await fetch(`${apiUrl}/student/courses`, {
       credentials: "include",
     });
-    console.log("Full Response:", response);
+
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message);
     }
     const data = await response.json();
-    console.log("Parsed Response Data:", data);
+
     return data;
   } catch (error) {
     console.error("Error fetching courses:", error);
@@ -47,6 +47,10 @@ function AllStudentCourses() {
   const handleCardClick = (courseId) => {
     navigate(`/course/${courseId}`);
   };
+
+  if (isLoading) {
+    return <Skeleton />;
+  }
 
   return (
     <div className="container mx-auto p-4 max-w-screen-lg">

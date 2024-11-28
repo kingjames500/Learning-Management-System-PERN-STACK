@@ -26,8 +26,8 @@ const fetchCoursesToBeViewedByStudents = async () => {
 function AllStudentCourses() {
   const navigate = useNavigate();
   const {
-    studentCoursesAvailable,
-    setStudentCoursesAvailable,
+    studentCoursesAvailableList,
+    setStudentCoursesAvailableList,
     isLoading,
     setIsloading,
   } = useContext(StudentContext);
@@ -36,13 +36,13 @@ function AllStudentCourses() {
     const getCourses = async () => {
       const data = await fetchCoursesToBeViewedByStudents();
       if (data && data.success) {
-        setStudentCoursesAvailable(data.data);
+        setStudentCoursesAvailableList(data.data);
       }
     };
     getCourses();
   }, []);
 
-  useEffect(() => {}, [studentCoursesAvailable]);
+  useEffect(() => {}, [studentCoursesAvailableList]);
 
   const handleCardClick = (courseId) => {
     navigate(`/course/${courseId}`);
@@ -59,8 +59,9 @@ function AllStudentCourses() {
       </h1>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {studentCoursesAvailable && studentCoursesAvailable.length > 0 ? (
-          studentCoursesAvailable.map((studentCourse) => (
+        {studentCoursesAvailableList &&
+        studentCoursesAvailableList.length > 0 ? (
+          studentCoursesAvailableList.map((studentCourse) => (
             <div
               key={studentCourse.id}
               onClick={() => handleCardClick(studentCourse.id)}

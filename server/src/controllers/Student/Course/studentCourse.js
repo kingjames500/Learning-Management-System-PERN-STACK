@@ -8,10 +8,13 @@ const getAllAvaliableCourses = async (_req, res) => {
       where: {
         isPublished: true,
       },
+      include: {
+        curriculum: true,
+      },
     });
-    res.status(200).json(courses);
+    res.status(200).json({ success: true, data: courses });
   } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: error.message });
     return;
   }
 };

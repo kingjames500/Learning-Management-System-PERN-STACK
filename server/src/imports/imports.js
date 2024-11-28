@@ -30,11 +30,15 @@ import { getInstructorCourseCount } from "../controllers/Instructor/instructorCo
 
 // importing middleware for authToken
 import verifyAuthToken from "../middleware/AuthToken/authToken.js";
-import getAllAvaliableCourses from "../controllers/Student/Course/studentCourse.js";
+import {
+  getASingleCourseByStudent,
+  getAllAvaliableCourses,
+} from "../controllers/Student/Course/studentCourse.js";
 
 export {
   PrismaClient,
   getAllAvaliableCourses,
+  getASingleCourseByStudent,
   getInstructorCourseCount,
   createCourse,
   getASingleCourse,

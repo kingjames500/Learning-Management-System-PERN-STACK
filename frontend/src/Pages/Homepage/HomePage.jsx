@@ -1,6 +1,7 @@
 import React from "react";
 import apiUrl from "@/lib/apiUrl";
 import { useQuery } from "react-query";
+import { Link } from "react-router-dom";
 
 const HomePage = () => {
   // const { data, isLoading, error } = useQuery({
@@ -43,12 +44,12 @@ const HomePage = () => {
             Join thousands of learners from around the world already learning on
             Udemy Clone.
           </p>
-          <a
-            href="#"
+          <Link
+            to="/student"
             className="bg-blue-500 text-white px-6 py-3 rounded-full text-lg"
           >
             Start Learning
-          </a>
+          </Link>
         </div>
       </section>
       <section className="container mx-auto px-6 py-12">
@@ -70,7 +71,7 @@ const HomePage = () => {
               <h3 className="text-xl font-bold text-gray-800">
                 {/* {course.subtitle} */}
               </h3>
-              <p className="text-gray-600 mt-2">{course.title}</p>
+              <p className="text-gray-600 mt-2">kingjames</p>
               <div className="flex justify-between items-center mt-4">
                 <span className="text-gray-800 font-bold">
                   {/* ${course.pricing} */}

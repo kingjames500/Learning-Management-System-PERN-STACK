@@ -29,7 +29,7 @@ function AllStudentCourses() {
     studentCoursesAvailableList,
     setStudentCoursesAvailableList,
     isLoading,
-    setIsloading,
+    setIsLoading,
   } = useContext(StudentContext);
 
   useEffect(() => {
@@ -37,6 +37,7 @@ function AllStudentCourses() {
       const data = await fetchCoursesToBeViewedByStudents();
       if (data && data.success) {
         setStudentCoursesAvailableList(data.data);
+        setIsLoading(false);
       }
     };
     getCourses();
@@ -45,7 +46,7 @@ function AllStudentCourses() {
   useEffect(() => {}, [studentCoursesAvailableList]);
 
   const handleCardClick = (courseId) => {
-    navigate(`/course/${courseId}`);
+    navigate(`/student/course/${courseId}`);
   };
 
   if (isLoading) {

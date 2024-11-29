@@ -1,11 +1,12 @@
 import { StudentContext } from "@/components/Context/StudentContext/StudentContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import VideoPlayer from "@/components/Video/VideoPlayer";
 import apiUrl from "@/lib/apiUrl";
-import { Car, CheckCircle, Globe, Lock, PlayCircle } from "lucide-react";
+import { CheckCircle, Globe, Lock, PlayCircle } from "lucide-react";
 import React, { useContext, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { toast } from "sonner";
 
 const fetchCourseDetails = async (courseId) => {
@@ -33,8 +34,18 @@ function ViewCourse() {
     setStudentViewCourseDetails,
     currentCourseDetailsId,
     setCurrentCourseDetailsId,
+    isLoading,
+    setIsLoading,
   } = useContext(StudentContext);
   const { courseId } = useParams();
+  const location = useLocation();
+
+  // setting details to be null if not on the required page and path
+
+  useEffect(() => {
+    if (!location.pathname.includes("/student/course"))
+      setStudentViewCourseDetails(null), setCurrentCourseDetailsId(null);
+  }, [location.pathname]);
 
   // fetch course details
   useEffect(() => {
@@ -47,6 +58,7 @@ function ViewCourse() {
         const data = await fetchCourseDetails(currentCourseDetailsId);
         if (data && data.success) {
           setStudentViewCourseDetails(data?.data);
+          setIsLoading(false);
         }
       }
     }
@@ -55,16 +67,30 @@ function ViewCourse() {
 
   function handleSetFreePreview() {}
 
+  // get index of free preview url on the video list
+  const getIndexOfFreePreviewUrl =
+    studentViewCourseDetails !== null
+      ? studentViewCourseDetails?.curriculum?.findIndex(
+          (item) => item.freePreview,
+        )
+      : -1;
+
+  if (isLoading) {
+    return <div className=" mx-auto p-4">Fetching data......</div>;
+  }
+
   return (
     <div className=" mx-auto p-4">
-      <div className="bg-gray-900 text-white p-8 rounded-t-lg">
-        <h1 className="text-2xl font-bold">
+      <div className="bg-blue-900 text-white p-8 rounded-t-lg">
+        <h1 className="text-4xl font-bold">
           {studentViewCourseDetails?.title}
         </h1>
-        <p className="text-xl mb-4">{studentViewCourseDetails?.subtitle}</p>
+        <p className="text-2xl mb-4">{studentViewCourseDetails?.subtitle}</p>
         <div className="flex items-center space-x-4 mt-2 text-sm">
-          <span>{studentViewCourseDetails?.instructorName}</span>
-          {/* <span>Created On {studentViewCourseDetails?.date.split("T")[0]}</span> */}
+          <span className="text-xl">
+            {studentViewCourseDetails?.instructorName}
+          </span>
+          <span>Created On {studentViewCourseDetails?.date.split("T")[0]}</span>
           <span className="flex items-center">
             <Globe className="mr-1 h-4 w-4" />
             {studentViewCourseDetails?.primaryLanguage}
@@ -75,6 +101,7 @@ function ViewCourse() {
               ? "Student"
               : "Students"}
           </span> */}
+          <span>10 {10 <= 1 ? "Student" : "Students"}</span>
         </div>
       </div>
       <div className="flex flex-col md:flex-row gap-8 mt-8">
@@ -140,14 +167,21 @@ function ViewCourse() {
             <CardContent className="p-6">
               <div className="aspect-video mb-4 rounded-lg flex items-center justify-center">
                 <VideoPlayer
-                  url={studentViewCourseDetails?.previewVideo}
+                  url={
+                    getIndexOfFreePreviewUrl !== -1
+                      ? studentViewCourseDetails.curriculum[
+                          getIndexOfFreePreviewUrl
+                        ].videoUrl
+                      : "No vidoe Available"
+                  }
                   width="450px"
                   height="200px"
                 />
               </div>
-              <div className="mb-4">
-                <span className="text-3xl font-bold">
-                  ${studentViewCourseDetails?.pricing}
+              <div className="mb-4 gap-3">
+                <span className="text-2xl font-bold text-red-600">$</span>
+                <span className="text-2xl text-blue-700 font-extrabold">
+                  {studentViewCourseDetails?.pricing}
                 </span>
               </div>
               <Button className="w-full">Buy Now</Button>

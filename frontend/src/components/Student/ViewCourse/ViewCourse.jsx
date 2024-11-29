@@ -1,11 +1,12 @@
 import { StudentContext } from "@/components/Context/StudentContext/StudentContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+
 import VideoPlayer from "@/components/Video/VideoPlayer";
 import apiUrl from "@/lib/apiUrl";
 import { CheckCircle, Globe, Lock, PlayCircle } from "lucide-react";
 import React, { useContext, useEffect } from "react";
+import { useMutation } from "react-query";
 import { useLocation, useParams } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -27,6 +28,17 @@ const fetchCourseDetails = async (courseId) => {
     return;
   }
 };
+
+const EnrollCourseAndBuy = async () => {
+  try {
+    const { mutate, isError, error} = useMutation({
+      mutationFn: async ()
+    })
+  } catch (error) {
+    toast.error(error.message);
+    return;
+  }
+}
 
 function ViewCourse() {
   const {
@@ -184,7 +196,11 @@ function ViewCourse() {
                   {studentViewCourseDetails?.pricing}
                 </span>
               </div>
-              <Button className="w-full">Buy Now</Button>
+              <Button className="w-full"
+                onClick={() => {
+                  console.log("buy now");
+                }}
+              >Buy Now</Button>
             </CardContent>
           </Card>
         </aside>

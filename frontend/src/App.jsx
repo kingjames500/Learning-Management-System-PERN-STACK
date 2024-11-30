@@ -12,6 +12,7 @@ import QenerateAssignment from "./components/Instructor/InstructorAssignments/Qe
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import StudentViewCoursePage from "./Pages/Student/StudentViewCoursePage/StudentViewCoursePage";
 import StudentHomePage from "./Pages/Student/Home/StudentHomePage";
+import StudentEnrolledCourses from "./Pages/Student/StudentEnrolledCourses/StudentEnrolledCourses";
 
 function App() {
   const client = new QueryClient();
@@ -59,6 +60,14 @@ function App() {
             element={
               <ProtectedRoute role="student">
                 <StudentViewCoursePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/student/enrolled-courses"
+            element={
+              <ProtectedRoute role="student">
+                <StudentEnrolledCourses />
               </ProtectedRoute>
             }
           />

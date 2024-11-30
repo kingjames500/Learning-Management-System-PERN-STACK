@@ -7,7 +7,7 @@ import userDetailsStore from "@/Store/userStoreDetails";
 import { CheckCircle, Globe, Lock, PlayCircle } from "lucide-react";
 import React, { useContext, useEffect } from "react";
 import { useMutation } from "react-query";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 
 const fetchCourseDetails = async (courseId) => {
@@ -38,6 +38,7 @@ function ViewCourse() {
     isLoading,
     setIsLoading,
   } = useContext(StudentContext);
+  const redirect = useNavigate();
   const { courseId } = useParams();
   const location = useLocation();
   const phoneNumber = userDetailsStore((state) => state.user.phoneNumber);
@@ -105,9 +106,13 @@ function ViewCourse() {
 
       return data;
     },
-    onSuccess: () => {
-      toast.success("Course enrolled successfully");
-      setTimeout(() => {}, 2000);
+    onSuccess: (data) => {
+      if (data.sucess) {
+        toast.success("You have enrolled to this course successfully");
+        setTimeout(() => {
+          redirect("/student/enrolled-courses");
+        }, 2000);
+      }
     },
     onError: (error) => {
       toast.error(error.message);

@@ -11,6 +11,7 @@ import assignmentGen from "./Routes/openai.js";
 import { verifyAuthToken } from "./imports/imports.js";
 import studentCourseRoutes from "./Routes/course/student/student-course-routes.js";
 
+import studentCoursePaymentRoutes from "./Routes/course/student/Payments.js";
 const app = express();
 dotenv.config();
 
@@ -26,6 +27,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.json());
 
+app.use("/api", studentCoursePaymentRoutes);
 app.use("/api", assignmentGen);
 
 // Routes for the server only

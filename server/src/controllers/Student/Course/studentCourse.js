@@ -22,7 +22,7 @@ const getAllAvaliableCourses = async (_req, res) => {
 const getASingleCourseByStudent = async (req, res) => {
   try {
     const { courseId } = req.params;
-    console.log(courseId);
+
     const course = await prisma.course.findUnique({
       where: {
         id: courseId,
@@ -39,8 +39,8 @@ const getASingleCourseByStudent = async (req, res) => {
     }
 
     res.status(200).json({
-      message: "Course fetched successfully",
-      course: course,
+      success: true,
+      data: course,
     });
   } catch (error) {
     res.status(500).json({ message: "something went wrong" });

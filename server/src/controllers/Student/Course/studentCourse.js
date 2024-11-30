@@ -10,6 +10,11 @@ const getAllAvaliableCourses = async (_req, res) => {
       },
       include: {
         curriculum: true,
+        students: {
+          include: {
+            user: true,
+          },
+        },
       },
     });
     res.status(200).json({ success: true, data: courses });
@@ -29,6 +34,11 @@ const getASingleCourseByStudent = async (req, res) => {
       },
       include: {
         curriculum: true,
+        students: {
+          include: {
+            user: true,
+          },
+        },
       },
     });
 

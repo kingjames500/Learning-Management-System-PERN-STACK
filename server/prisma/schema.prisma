@@ -69,6 +69,8 @@ model Payment {
   userId     String
   courseId   String
   amount     String
+  phoneNumber String
+  mpesaReceiptNumber String?
   status     PaymentStatus @default(requested)
   createdAt  DateTime      @default(now())
   updatedAt  DateTime      @updatedAt

@@ -7,7 +7,7 @@ import { Router, verifyAuthToken } from "../../../imports/imports.js";
 const router = Router();
 
 router.post(
-  "/student/payment/:courseId",
+  "/student/course/payment",
   generateToken,
   verifyAuthToken,
   stkSimulate,

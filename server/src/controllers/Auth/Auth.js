@@ -10,13 +10,22 @@ const client = new PrismaClient();
 
 const authRegisterUser = async (req, res) => {
   try {
-    const { email, username, firstName, lastName, password, role } = req.body;
+    const {
+      email,
+      username,
+      firstName,
+      lastName,
+      password,
+      role,
+      phoneNumber,
+    } = req.body;
 
     const hashPassword = await bcrypt.hash(password, 8);
 
     await client.user.create({
       data: {
         email,
+        phoneNumber,
         username,
         firstName,
         lastName,
@@ -62,6 +71,7 @@ const authLoginUser = async (req, res) => {
           username: user.username,
           firstName: user.firstName,
           lastName: user.lastName,
+          phoneNumber: user.phoneNumber,
           role: user.role,
         },
       });

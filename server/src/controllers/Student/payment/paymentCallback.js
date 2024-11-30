@@ -14,37 +14,35 @@ const paymentCallback = async (req, res) => {
       callBackData.body.stkCallback.CallbackMetadata.Item[4].Value;
     const mpesaReceiptNumber =
       callBackData.body.stkCallback.CallbackMetadata.Item[1].Value;
-      const resultCode = callBackData.body.stkCallback.ResultCode;
-      
-      console.log(resultCode);
+    const resultCode = callBackData.body.stkCallback.ResultCode;
 
-      if (resultCode === 1037) {
-        await client.payment.update({
-          where: {
-            phoneNumber,
-          },
-          data: {
-            status: "failed",
-            amount,
-            phoneNumber,
-            mpesaReceiptNumber: "failed",
-          },
-        });
-        
-      }
-      // if (resultCode === 0) {
-      //   await client.payment.update({
-      //     where: {
-      //       mpesaReceiptNumber,
-      //     },
-      //     data: {
-      //       status: "paid",
-      //       amount,
-      //       phoneNumber,
-      //     },
-      //   });
-      // }
+    console.log(resultCode);
 
+    if (resultCode === 1037) {
+      await client.payment.update({
+        where: {
+          phoneNumber,
+        },
+        data: {
+          status: "failed",
+          amount,
+          phoneNumber,
+          mpesaReceiptNumber: "failed",
+        },
+      });
+    }
+    // if (resultCode === 0) {
+    //   await client.payment.update({
+    //     where: {
+    //       mpesaReceiptNumber,
+    //     },
+    //     data: {
+    //       status: "paid",
+    //       amount,
+    //       phoneNumber,
+    //     },
+    //   });
+    // }
   } catch (error) {
     res.status(500).json({
       error: "Internal server error",

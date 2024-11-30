@@ -1,9 +1,9 @@
 import { StudentContext } from "@/components/Context/StudentContext/StudentContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
 import VideoPlayer from "@/components/Video/VideoPlayer";
 import apiUrl from "@/lib/apiUrl";
+import userDetailsStore from "@/Store/userStoreDetails";
 import { CheckCircle, Globe, Lock, PlayCircle } from "lucide-react";
 import React, { useContext, useEffect } from "react";
 import { useMutation } from "react-query";
@@ -29,17 +29,6 @@ const fetchCourseDetails = async (courseId) => {
   }
 };
 
-const EnrollCourseAndBuy = async () => {
-  try {
-    const { mutate, isError, error} = useMutation({
-      mutationFn: async ()
-    })
-  } catch (error) {
-    toast.error(error.message);
-    return;
-  }
-}
-
 function ViewCourse() {
   const {
     studentViewCourseDetails,
@@ -51,6 +40,11 @@ function ViewCourse() {
   } = useContext(StudentContext);
   const { courseId } = useParams();
   const location = useLocation();
+  const phoneNumber = userDetailsStore((state) => state.user.phoneNumber);
+
+  const formattedNumber = phoneNumber.startsWith("0")
+    ? phoneNumber.substring(1)
+    : phoneNumber;
 
   // setting details to be null if not on the required page and path
 
@@ -74,6 +68,7 @@ function ViewCourse() {
         }
       }
     }
+
     getCourseDetails();
   }, [currentCourseDetailsId]);
 
@@ -87,7 +82,50 @@ function ViewCourse() {
         )
       : -1;
 
-  if (isLoading) {
+  const {
+    isLoading: isEnrolling,
+    error,
+    isError,
+    mutate,
+  } = useMutation({
+    mutationFn: async function (paymentsAndEnrollCourse) {
+      const response = await fetch(`${apiUrl}/student/course/payment`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(paymentsAndEnrollCourse),
+      });
+      if (response.ok === false) {
+        const error = await response.json();
+        throw new Error(error.message);
+      }
+      const data = await response.json();
+
+      return data;
+    },
+    onSuccess: () => {
+      toast.success("Course enrolled successfully");
+      setTimeout(() => {}, 2000);
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
+  function handleBuyCourseAndEnroll(e) {
+    e.preventDefault();
+    const paymentsAndEnrollCourse = {
+      courseId: currentCourseDetailsId,
+      phoneNumber: formattedNumber,
+      amount: studentViewCourseDetails?.pricing,
+    };
+
+    mutate(paymentsAndEnrollCourse);
+  }
+
+  if (isLoading || isEnrolling) {
     return <div className=" mx-auto p-4">Fetching data......</div>;
   }
 
@@ -107,13 +145,12 @@ function ViewCourse() {
             <Globe className="mr-1 h-4 w-4" />
             {studentViewCourseDetails?.primaryLanguage}
           </span>
-          {/* <span>
+          <span>
             {studentViewCourseDetails?.students.length}{" "}
             {studentViewCourseDetails?.students.length <= 1
               ? "Student"
               : "Students"}
-          </span> */}
-          <span>10 {10 <= 1 ? "Student" : "Students"}</span>
+          </span>
         </div>
       </div>
       <div className="flex flex-col md:flex-row gap-8 mt-8">
@@ -196,11 +233,9 @@ function ViewCourse() {
                   {studentViewCourseDetails?.pricing}
                 </span>
               </div>
-              <Button className="w-full"
-                onClick={() => {
-                  console.log("buy now");
-                }}
-              >Buy Now</Button>
+              <Button className="w-full" onClick={handleBuyCourseAndEnroll}>
+                Buy Now
+              </Button>
             </CardContent>
           </Card>
         </aside>

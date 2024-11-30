@@ -50,12 +50,12 @@ function AllStudentCourses() {
   };
 
   if (isLoading) {
-    return <Skeleton />;
+    return <div>Loading! Please Wait.......</div>;
   }
 
   return (
     <div className="container mx-auto p-4 max-w-screen-lg">
-      <h1 className="text-3xl font-bold mb-6 text-center">
+      <h1 className="text-3xl font-bold mb-6 text-center text-blue-600">
         All Courses Available
       </h1>
 

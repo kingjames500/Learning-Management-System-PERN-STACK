@@ -4,9 +4,11 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import apiUrl from "@/lib/apiUrl";
 import { Watch } from "lucide-react";
 import React, { useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 function StudentCourses() {
+  const redirect = useNavigate();
   const {
     studentEnrolledCourses,
     setStudentEnrolledCourses,
@@ -60,9 +62,9 @@ function StudentCourses() {
               </CardContent>
               <CardFooter>
                 <Button
-                  // onClick={() =>
-                  //   navigate(`/course-progress/${enrollment.courseId}`)
-                  // }
+                  onClick={() =>
+                    redirect(`/student/course/${enrollment.courseId}`)
+                  }
                   className="flex-1"
                 >
                   <Watch className="mr-2 h-4 w-4" />

@@ -13,6 +13,7 @@ import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import StudentViewCoursePage from "./Pages/Student/StudentViewCoursePage/StudentViewCoursePage";
 import StudentHomePage from "./Pages/Student/Home/StudentHomePage";
 import StudentEnrolledCourses from "./Pages/Student/StudentEnrolledCourses/StudentEnrolledCourses";
+import StudentEnrolledCourseDetails from "./Pages/Student/StudentEnrolledCourseDetails/StudentEnrolledCourseDetails";
 
 function App() {
   const client = new QueryClient();
@@ -60,6 +61,14 @@ function App() {
             element={
               <ProtectedRoute role="student">
                 <StudentViewCoursePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/student/course/progess/:courseId"
+            element={
+              <ProtectedRoute role="student">
+                <StudentEnrolledCourseDetails />
               </ProtectedRoute>
             }
           />

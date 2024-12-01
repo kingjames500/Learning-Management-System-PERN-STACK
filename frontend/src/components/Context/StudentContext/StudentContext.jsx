@@ -16,6 +16,9 @@ export default function StudentProvider({ children }) {
   // for showing the course that the student has enrolled
   const [studentEnrolledCourses, setStudentEnrolledCourses] = useState([]);
 
+  const [studentCurrentCourseProgess, setStudentCurrentCourseProgess] =
+    useState({});
+
   return (
     <StudentContext.Provider
       value={{
@@ -29,6 +32,8 @@ export default function StudentProvider({ children }) {
         setCurrentCourseDetailsId,
         isLoading,
         setIsLoading,
+        studentCurrentCourseProgess,
+        setStudentCurrentCourseProgess,
       }}
     >
       {children}

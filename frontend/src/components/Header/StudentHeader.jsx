@@ -32,7 +32,7 @@ function StudentHeader() {
             {auth.role === "student" && auth.user && (
               <div className="flex gap-4 items-center">
                 <Link
-                  to="/student-courses"
+                  to="/student/enrolled-courses"
                   className="flex cursor-pointer items-center gap-3"
                 >
                   <span className="font-extrabold md:text-xl text-[14px]">

@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")  // Database URL from .env file
+  url      = env("DATABASE_URL") // Database URL from .env file
 }
 
 enum PaymentStatus {
@@ -14,38 +14,40 @@ enum PaymentStatus {
 }
 
 model Lecture {
-  id         String @id @default(uuid())
+  id          String  @id @default(uuid())
   title       String
   videoUrl    String
   public_id   String
   freePreview Boolean
   courseId    String
-  course      Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lectureProgress LectureProgress[]
 }
 
 model Course {
-  id              String           @id @default(uuid())
-  instructorId     String
-  instructorName   String
-  date             DateTime         @default(now())
-  title            String
-  category         String
-  level            String
-  primaryLanguage  String
-  subtitle         String?
-  description      String
-  image            String?
-  welcomeMessage   String?
-  pricing          String
-  objectives       String
-  isPublished      Boolean          @default(false)
-  curriculum       Lecture[]
-  students         CourseEnrollment[]
-  payments         Payment[]
+  id              String            @id @default(uuid())
+  instructorId    String
+  instructorName  String
+  date            DateTime          @default(now())
+  title           String
+  category        String
+  level           String
+  primaryLanguage String
+  subtitle        String?
+  description     String
+  image           String?
+  welcomeMessage  String?
+  pricing         String
+  objectives      String
+  isPublished     Boolean           @default(false)
+  curriculum      Lecture[]
+  students        CourseEnrollment[]
+  payments        Payment[]
+  progress        CourseProgress[]
 }
 
 model User {
-  id              String              @id  @default(uuid())
+  id              String              @id @default(uuid())
   firstName       String
   lastName        String
   username        String              @unique
@@ -55,26 +57,52 @@ model User {
   role            String              @default("student") // 'student', 'instructor', etc.
   coursesEnrolled CourseEnrollment[]
   payments        Payment[]
+  progress        CourseProgress[]
 }
 
 model CourseEnrollment {
   courseId String
   userId   String
-  course   Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  user     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   @@id([courseId, userId])
 }
 
+model CourseProgress {
+  id               String            @id @default(uuid())
+  userId           String
+  courseId         String
+  completed        Boolean           @default(false)
+  completionDate   DateTime?
+  lecturesProgress LectureProgress[]
+  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course           Course            @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId]) // Ensure a user can have only one progress record per course
+}
+
+model LectureProgress {
+  id              String           @id @default(uuid())
+  courseProgressId String
+  lectureId       String
+  viewed          Boolean          @default(false)
+  dateViewed      DateTime?
+  courseProgress  CourseProgress   @relation(fields: [courseProgressId], references: [id], onDelete: Cascade)
+  lecture         Lecture          @relation(fields: [lectureId], references: [id], onDelete: Cascade)
+
+  @@unique([courseProgressId, lectureId]) // Ensure one record per lecture per course progress
+}
+
 model Payment {
-  id         String        @id @default(uuid())
-  userId     String
-  courseId   String
-  amount     String
-  phoneNumber String
+  id               String        @id @default(uuid())
+  userId           String
+  courseId         String
+  amount           String
+  phoneNumber      String
   mpesaReceiptNumber String?
-  status     PaymentStatus @default(requested)
-  createdAt  DateTime      @default(now())
-  updatedAt  DateTime      @updatedAt
-  user       User          @relation(fields: [userId], references: [id])
-  course     Course        @relation(fields: [courseId], references: [id])
+  status           PaymentStatus @default(requested)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  user             User          @relation(fields: [userId], references: [id])
+  course           Course        @relation(fields: [courseId], references: [id])
 }

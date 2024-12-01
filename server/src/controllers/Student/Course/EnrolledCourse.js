@@ -11,7 +11,13 @@ const studentEnrolledCourses = async (req, res) => {
         userId: userId,
       },
       include: {
-        course: true,
+        course: {
+          select: {
+            title: true,
+            image: true,
+            instructorName: true,
+          },
+        },
       },
     });
 

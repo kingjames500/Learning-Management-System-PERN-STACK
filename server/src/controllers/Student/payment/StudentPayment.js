@@ -8,7 +8,6 @@ import {
 const client = new PrismaClient();
 
 const stkSimulate = async (req, res) => {
-  console.log("endpoint hit");
   const userId = req.userId;
   const { phoneNumber, amount, courseId } = req.body;
   const access_token = req.access_token;

@@ -19,7 +19,7 @@ function StudentHeader() {
         </Link>
         <div className="flex items-center space-x-1">
           <Link
-            to="/courses"
+            to="/student"
             className="text-[14px] md:text-[16px] font-medium hover:text-black"
           >
             Explore Courses
@@ -31,15 +31,15 @@ function StudentHeader() {
           <>
             {auth.role === "student" && auth.user && (
               <div className="flex gap-4 items-center">
-                <div
-                  onClick={() => redirect("/student-courses")}
+                <Link
+                  to="/student-courses"
                   className="flex cursor-pointer items-center gap-3"
                 >
                   <span className="font-extrabold md:text-xl text-[14px]">
                     My Courses
                   </span>
                   <TvMinimalPlay className="w-8 h-8 cursor-pointer" />
-                </div>
+                </Link>
                 <Link to="/profile" className="hover:text-black">
                   {auth.user.username}
                 </Link>

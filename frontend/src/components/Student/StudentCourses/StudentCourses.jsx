@@ -20,8 +20,7 @@ function StudentCourses() {
         credentials: "include",
       });
       const data = await response.json();
-      console.log(data, "data");
-      if (data && data.success) {
+      if (data && data?.success) {
         setStudentEnrolledCourses(data?.data);
         setIsLoading(false);
       }
@@ -61,9 +60,9 @@ function StudentCourses() {
               </CardContent>
               <CardFooter>
                 <Button
-                  onClick={() =>
-                    navigate(`/course-progress/${enrollment.courseId}`)
-                  }
+                  // onClick={() =>
+                  //   navigate(`/course-progress/${enrollment.courseId}`)
+                  // }
                   className="flex-1"
                 >
                   <Watch className="mr-2 h-4 w-4" />

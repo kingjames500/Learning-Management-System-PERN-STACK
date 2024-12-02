@@ -1,4 +1,3 @@
-import e from "express";
 import { PrismaClient } from "../../../imports/imports.js";
 
 const prisma = new PrismaClient();
@@ -59,6 +58,9 @@ const getAllCourses = async (req, res) => {
       },
       include: {
         curriculum: true,
+      },
+      include: {
+        students: true,
       },
     });
 
@@ -216,14 +218,11 @@ const getPopularCourses = async (_req, res) => {
         title: true,
         description: true,
         image: true,
-        category: true,
         instructorName: true,
         level: true,
         primaryLanguage: true,
         subtitle: true,
         pricing: true,
-        objectives: true,
-        date: true,
       },
     });
     res.status(200).json({ success: true, data: popularCourses });

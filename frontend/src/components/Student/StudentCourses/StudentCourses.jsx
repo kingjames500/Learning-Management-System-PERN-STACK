@@ -63,7 +63,7 @@ function StudentCourses() {
               <CardFooter>
                 <Button
                   onClick={() =>
-                    redirect(`/student/course/${enrollment.courseId}`)
+                    redirect(`/student/purchased-enrolled-course/${enrollment.courseId}`)
                   }
                   className="flex-1"
                 >

@@ -65,7 +65,7 @@ function App() {
             }
           />
           <Route
-            path="/student/course/progess/:courseId"
+            path="/student/purchased-enrolled-course/:courseId"
             element={
               <ProtectedRoute role="student">
                 <StudentEnrolledCourseDetails />

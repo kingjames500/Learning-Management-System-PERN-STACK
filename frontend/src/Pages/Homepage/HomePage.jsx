@@ -2,35 +2,44 @@ import React from "react";
 import apiUrl from "@/lib/apiUrl";
 import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
+import { User } from "lucide-react";
 
 const HomePage = () => {
-  // const { data, isLoading, error } = useQuery({
-  //   queryKey: "popularCourses",
-  //   queryFn: async () => {
-  //     const res = await fetch(`${apiUrl}/home/popular-courses`);
+  const { data, isLoading, error } = useQuery({
+    queryKey: "popularCourses",
+    queryFn: async () => {
+      const response = await fetch(`${apiUrl}/home/popular-courses`);
 
-  //     if (!res.ok) {
-  //       const error = await res.json();
-  //       throw new Error(error.message);
-  //     }
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message);
+      }
 
-  //     const data = await res.json();
-  //     return data.popularCourse; // Assuming this is the array of courses
-  //   },
-  //   cacheTime: Infinity,
-  // });
+      const data = await response.json();
+      console.log(data);
+      return data?.data; // Assuming this is the array of courses
+    },
+    cacheTime: Infinity, 
+    staleTime: Infinity, 
+    refetchOnWindowFocus: false, 
+    refetchOnMount: false, 
+    refetchOnReconnect: false, 
+  });
 
-  // if (isLoading) {
-  //   return <div className="text-center py-12">Loading courses...</div>;
-  // }
 
-  // if (error) {
-  //   return (
-  //     <div className="text-center py-12 text-red-500">
-  //       Failed to load courses: {error.message}
-  //     </div>
-  //   );
-  // }
+  if (isLoading) {
+    return <div className="text-center py-12">Loading courses...</div>;
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-12 text-red-500">
+        Failed to load courses: {error.message}
+      </div>
+    );
+  }
+
+  const isTwoCourses = data && data.length === 2;
 
   return (
     <div className="bg-gray-100 mt-5">
@@ -52,43 +61,53 @@ const HomePage = () => {
           </Link>
         </div>
       </section>
+
+      {/* Popular Courses Section */}
       <section className="container mx-auto px-6 py-12">
         <h2 className="text-3xl font-bold text-gray-800 text-center mb-8">
           Popular Courses
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {/* {data.map((course) => ( */}
-          <div
-            // key={course.id} // Use a unique identifier for each course
-            className="bg-white shadow-md rounded-lg overflow-hidden"
-          >
-            <img
-              // src={course.image} // Ensure your API provides this field
-              // alt={course.subtitle}
-              className="w-full h-48 object-cover"
-            />
-            <div className="p-6">
-              <h3 className="text-xl font-bold text-gray-800">
-                {/* {course.subtitle} */}
-              </h3>
-              <p className="text-gray-600 mt-2">kingjames</p>
-              <div className="flex justify-between items-center mt-4">
-                <span className="text-gray-800 font-bold">
-                  {/* ${course.pricing} */}
-                </span>
-                <a
-                  // href={`/courses/${course.id}`} // Link to the course page
-                  className="bg-blue-500 text-white px-4 py-2 rounded"
-                >
-                  Enroll
-                </a>
+        <div
+          className={`grid ${isTwoCourses
+              ? "grid-cols-1 md:grid-cols-2 justify-center"
+              : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+            } gap-8`}
+        >
+          {data.map((course) => (
+            <div
+              key={course.id}
+              className="bg-white shadow-md rounded-lg overflow-hidden"
+            >
+              <img
+                src={course.image}
+                alt={course.subtitle}
+                className="w-full h-48 object-cover"
+              />
+              <div className="p-6">
+                <h3 className="text-xl font-bold text-gray-800">
+                  {course.title}
+                </h3>
+                <p className="text-gray-600 mt-2 flex items-center text-2xl font-semibold">
+                  <User className="mr-2 h-6 w-6" /> {course.instructorName}
+                </p>
+                <div className="flex justify-between items-center mt-4">
+                  <span className="text-gray-800 font-bold">
+                    ${course.pricing}
+                  </span>
+                  <Link
+                    to={`/student/course/${course.id}`} // Link to the course page
+                    className="bg-blue-500 text-white px-4 py-2 rounded"
+                  >
+                    Enroll
+                  </Link>
+                </div>
               </div>
             </div>
-          </div>
-          {/* ))} */}
+          ))}
         </div>
       </section>
 
+      {/* About Us Section */}
       <section className="bg-blue-100 py-12">
         <div className="container mx-auto px-6 text-center">
           <h2 className="text-3xl font-bold text-gray-800 mb-4">About Us</h2>
@@ -105,6 +124,8 @@ const HomePage = () => {
           </p>
         </div>
       </section>
+
+      {/* Footer */}
       <footer className="bg-gray-800 text-white py-6">
         <div className="container mx-auto px-6 text-center">
           <p>&copy; 2024 Learning Management System. All rights reserved.</p>

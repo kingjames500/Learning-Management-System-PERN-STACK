@@ -13,6 +13,7 @@ function ProtectedRoute({ role, children }) {
   }
 
   const userRole = user.role;
+  console.log(role, userRole);
 
   if (userRole !== role) {
     return <Navigate to="/" />;

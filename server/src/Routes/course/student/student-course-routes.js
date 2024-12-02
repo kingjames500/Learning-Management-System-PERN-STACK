@@ -6,6 +6,7 @@ import {
 } from "../../../imports/imports.js";
 
 import studentEnrolledCourses from "../../../controllers/Student/Course/EnrolledCourse.js";
+import { getCurrentPurchasedCourseByStudent } from "../../../controllers/Student/Course/courseProgress.js";
 
 const router = Router();
 
@@ -14,6 +15,12 @@ router.get(
   "/student/course/:courseId",
   verifyAuthToken,
   getASingleCourseByStudent,
+);
+
+router.get(
+  "/student/course-learning-progress/:courseId",
+  verifyAuthToken,
+  getCurrentPurchasedCourseByStudent,
 );
 
 router.get(

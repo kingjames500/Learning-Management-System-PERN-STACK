@@ -9,9 +9,12 @@ import {
   verifyAuthToken,
 } from "../../imports/imports.js";
 
+import { getPopularCourses } from "../../controllers/Instructor/course/course-controller.js";
+
 const router = Router();
 
 //instructor-course routes
+router.get("/home/popular-courses", getPopularCourses);
 router.post("/create-course", verifyAuthToken, createCourse);
 router.put("/update-course/:courseId", verifyAuthToken, updateCourse);
 router.get("/get-course/:courseId", verifyAuthToken, getASingleCourse);

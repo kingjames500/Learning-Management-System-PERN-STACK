@@ -38,7 +38,7 @@ app.use("/api", cloudinaryUploads);
 app.use("/api", studentCourseRoutes);
 
 //course routes
-app.use("/api", verifyAuthToken, courseRoutes);
+app.use("/api", courseRoutes);
 app.listen(process.env.SERVER_PORT, () => {
   console.log(`Server is running on port ${process.env.SERVER_PORT}`);
 });

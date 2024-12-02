@@ -204,10 +204,40 @@ const deleteCourse = async (req, res) => {
   }
 };
 
+// getting popular courses by student enrollment
+
+const getPopularCourses = async (_req, res) => {
+  try {
+    const popularCourses = await prisma.course.findMany({
+      where: { isPublished: true },
+      orderBy: { students: { _count: "desc" } },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        image: true,
+        category: true,
+        instructorName: true,
+        level: true,
+        primaryLanguage: true,
+        subtitle: true,
+        pricing: true,
+        objectives: true,
+        date: true,
+      },
+    });
+    res.status(200).json({ success: true, data: popularCourses });
+  } catch (error) {
+    console.error("Error fetching popular courses:", error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 export {
   createCourse,
   getAllCourses,
   deleteCourse,
   getASingleCourse,
   updateCourse,
+  getPopularCourses,
 };

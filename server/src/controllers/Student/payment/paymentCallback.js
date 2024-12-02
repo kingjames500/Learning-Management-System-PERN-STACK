@@ -3,9 +3,10 @@ import { PrismaClient } from "../../../imports/imports.js";
 const client = new PrismaClient();
 
 const paymentCallback = async (req, res) => {
-  console.log("call back url hit");
+  console.log("call back url hit from our server");
   const callBackData = req.body;
   console.log(callBackData);
+  console.log(callBackData.body.stkCallback.ResultCode);
   try {
     console.log(callBackData.body.stkCallback.CallbackMetadata);
 

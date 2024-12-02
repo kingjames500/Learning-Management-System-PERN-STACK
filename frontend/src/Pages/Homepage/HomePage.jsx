@@ -68,7 +68,7 @@ const HomePage = () => {
           Popular Courses
         </h2>
         <div
-          className={`grid ${isTwoCourses
+          className={`grid ${data.length === 2
               ? "grid-cols-1 md:grid-cols-2 justify-center"
               : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
             } gap-8`}
@@ -84,18 +84,25 @@ const HomePage = () => {
                 className="w-full h-48 object-cover"
               />
               <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-800">
-                  {course.title}
-                </h3>
-                <p className="text-gray-600 mt-2 flex items-center text-2xl font-semibold">
-                  <User className="mr-2 h-6 w-6" /> {course.instructorName}
+                <h3 className="text-xl font-bold text-gray-800">{course.title}</h3>
+                <p className="text-gray-600 mt-2 text-sm line-clamp-3">
+                  {course.courseDescription}
+                </p>
+                <p className="text-gray-600 mt-4 flex items-center text-lg font-semibold">
+                  <User className="mr-2 h-5 w-5" /> {course.instructorName}
                 </p>
                 <div className="flex justify-between items-center mt-4">
-                  <span className="text-gray-800 font-bold">
-                    ${course.pricing}
+                  <span className="text-sm text-blue-500 bg-blue-100 px-2 py-1 rounded-full">
+                    {course.level}
                   </span>
+                  <span className="text-sm text-green-500 bg-green-100 px-2 py-1 rounded-full">
+                    {course.category}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center mt-4">
+                  <span className="text-gray-800 font-bold">${course.pricing}</span>
                   <Link
-                    to={`/student/course/${course.id}`} // Link to the course page
+                    to={`/student/course/${course.id}`}
                     className="bg-blue-500 text-white px-4 py-2 rounded"
                   >
                     Enroll
@@ -106,6 +113,7 @@ const HomePage = () => {
           ))}
         </div>
       </section>
+
 
       {/* About Us Section */}
       <section className="bg-blue-100 py-12">

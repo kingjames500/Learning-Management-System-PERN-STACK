@@ -18,7 +18,10 @@ function StudentHeader() {
           </span>
         </Link>
         <div className="flex items-center space-x-1">
-          <Link to="/student" className="text-[14px] md:text-[16px] font-medium hover:text-black">
+          <Link
+            to="/student"
+            className="text-[14px] md:text-[16px] font-medium hover:text-black"
+          >
             Explore Courses
           </Link>
         </div>
@@ -27,11 +30,18 @@ function StudentHeader() {
         {user ? (
           user.role === "student" ? (
             <div className="flex gap-4 items-center">
-              <Link to="/student/enrolled-courses" className="flex cursor-pointer items-center gap-3">
-                <span className="font-extrabold md:text-xl text-[14px]">My Courses</span>
+              <Link
+                to="/student/enrolled-courses"
+                className="flex cursor-pointer items-center gap-3"
+              >
+                <span className="font-extrabold md:text-xl text-[14px]">
+                  My Courses
+                </span>
                 <TvMinimalPlay className="w-8 h-8 cursor-pointer" />
               </Link>
-              <Link to="/profile" className="hover:text-black">{user.username}</Link>
+              <Link to="/profile" className="hover:text-black">
+                {user.username}
+              </Link>
               <Link
                 to="/auth"
                 className="hover:text-black"

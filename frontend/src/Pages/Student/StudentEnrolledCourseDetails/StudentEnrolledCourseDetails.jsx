@@ -9,9 +9,12 @@ import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 async function getStudentCourseProgress(courseId) {
-  const response = await fetch(`${apiUrl}/student/course-learning-progress/${courseId}`, {
-    credentials: "include",
-  });
+  const response = await fetch(
+    `${apiUrl}/student/course-learning-progress/${courseId}`,
+    {
+      credentials: "include",
+    },
+  );
 
   if (response.ok === false) {
     console.log("Failed to get course progress");
@@ -25,7 +28,8 @@ async function getStudentCourseProgress(courseId) {
 
 export default function StudentEnrolledCourseDetails() {
   const { courseId } = useParams();
-  const { studentCurrentCourseProgess, setStudentCurrentCourseProgess } = useContext(StudentContext);
+  const { studentCurrentCourseProgess, setStudentCurrentCourseProgess } =
+    useContext(StudentContext);
 
   const [isSideBarOpen, setIsSideBarOpen] = useState(true);
 
@@ -75,8 +79,9 @@ export default function StudentEnrolledCourseDetails() {
       <div className="flex flex-1 overflow-hidden">
         {/* Video Player Section */}
         <div
-          className={`flex-1 flex items-center justify-center ${isSideBarOpen ? "mr-[400px]" : ""
-            } transition-all duration-300 bg-gray-50`}
+          className={`flex-1 flex items-center justify-center ${
+            isSideBarOpen ? "mr-[400px]" : ""
+          } transition-all duration-300 bg-gray-50`}
         >
           <div className="w-full max-w-5xl p-4">
             <VideoPlayer
@@ -86,10 +91,10 @@ export default function StudentEnrolledCourseDetails() {
             />
             <div className="p-6 mt-4 bg-gray-100 rounded-lg shadow-sm mb-7">
               <h2 className="text-2xl font-bold mb-2 text-gray-800">
-                {studentCurrentCourseProgess?.title }
+                {studentCurrentCourseProgess?.title}
               </h2>
               <p className="text-gray-600">
-                {studentCurrentCourseProgess?.description }
+                {studentCurrentCourseProgess?.description}
               </p>
             </div>
           </div>
@@ -97,8 +102,9 @@ export default function StudentEnrolledCourseDetails() {
 
         {/* Sidebar */}
         <div
-          className={`fixed top-[64px] right-0 bottom-0 w-[400px] bg-gray-100 border-l border-gray-300 transition-transform duration-300 ${isSideBarOpen ? "translate-x-0" : "translate-x-full"
-            }`}
+          className={`fixed top-[64px] right-0 bottom-0 w-[400px] bg-gray-100 border-l border-gray-300 transition-transform duration-300 ${
+            isSideBarOpen ? "translate-x-0" : "translate-x-full"
+          }`}
         >
           <Tabs defaultValue="content" className="h-full flex flex-col">
             {/* Tabs List */}
@@ -138,8 +144,12 @@ export default function StudentEnrolledCourseDetails() {
             <TabsContent value="overview" className="flex-1 overflow-hidden">
               <ScrollArea className="h-full">
                 <div className="p-4">
-                  <h2 className="text-xl font-bold mb-4 text-gray-800">About this course</h2>
-                  <p className="text-gray-600">{studentCurrentCourseProgess?.description}</p>
+                  <h2 className="text-xl font-bold mb-4 text-gray-800">
+                    About this course
+                  </h2>
+                  <p className="text-gray-600">
+                    {studentCurrentCourseProgess?.description}
+                  </p>
                 </div>
               </ScrollArea>
             </TabsContent>

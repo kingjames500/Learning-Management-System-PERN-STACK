@@ -4,9 +4,7 @@ import userDetailsStore from "@/Store/userStoreDetails";
 
 function ProtectedRoute({ role, children }) {
   const user = userDetailsStore((state) => state.user);
-;
-
-  const isAuthenticated =  user;
+  const isAuthenticated = user;
 
   if (!isAuthenticated) {
     return <Navigate to="/auth" />;

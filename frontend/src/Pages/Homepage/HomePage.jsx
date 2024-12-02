@@ -19,13 +19,12 @@ const HomePage = () => {
       console.log(data);
       return data?.data; // Assuming this is the array of courses
     },
-    cacheTime: Infinity, 
-    staleTime: Infinity, 
-    refetchOnWindowFocus: false, 
-    refetchOnMount: false, 
-    refetchOnReconnect: false, 
+    cacheTime: Infinity,
+    staleTime: Infinity,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
   });
-
 
   if (isLoading) {
     return <div className="text-center py-12">Loading courses...</div>;
@@ -68,10 +67,11 @@ const HomePage = () => {
           Popular Courses
         </h2>
         <div
-          className={`grid ${data.length === 2
+          className={`grid ${
+            data.length === 2
               ? "grid-cols-1 md:grid-cols-2 justify-center"
               : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-            } gap-8`}
+          } gap-8`}
         >
           {data.map((course) => (
             <div
@@ -84,9 +84,14 @@ const HomePage = () => {
                 className="w-full h-48 object-cover"
               />
               <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-800">{course.title}</h3>
+                <h3 className="text-xl font-bold text-gray-800">
+                  {course.title}
+                </h3>
+                <p className="text-blue-500 font-medium text-sm mt-1 italic">
+                  {course.subtitle}
+                </p>
                 <p className="text-gray-600 mt-2 text-sm line-clamp-3">
-                  {course.courseDescription}
+                  {course.description}
                 </p>
                 <p className="text-gray-600 mt-4 flex items-center text-lg font-semibold">
                   <User className="mr-2 h-5 w-5" /> {course.instructorName}
@@ -100,7 +105,9 @@ const HomePage = () => {
                   </span>
                 </div>
                 <div className="flex justify-between items-center mt-4">
-                  <span className="text-gray-800 font-bold">${course.pricing}</span>
+                  <span className="text-gray-800 font-bold">
+                    ${course.pricing}
+                  </span>
                   <Link
                     to={`/student/course/${course.id}`}
                     className="bg-blue-500 text-white px-4 py-2 rounded"
@@ -113,7 +120,6 @@ const HomePage = () => {
           ))}
         </div>
       </section>
-
 
       {/* About Us Section */}
       <section className="bg-blue-100 py-12">

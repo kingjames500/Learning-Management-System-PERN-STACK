@@ -12,7 +12,6 @@ import {
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
@@ -94,6 +93,7 @@ function InstructorCourse({ listOfCourses = [] }) {
     setCurrentPage(page);
   };
 
+  console.log(paginatedCourses, "paginatedCourses");
   return (
     <Card>
       <CardHeader className="flex flex-col md:flex-row justify-between items-center p-4">
@@ -114,6 +114,9 @@ function InstructorCourse({ listOfCourses = [] }) {
                   Course Name
                 </TableHead>
                 <TableHead className="p-4 text-left font-semibold">
+                  students enrolled
+                </TableHead>
+                <TableHead className="p-4 text-left font-semibold">
                   Revenue
                 </TableHead>
                 <TableHead className="p-4 text-left font-semibold">
@@ -130,6 +133,9 @@ function InstructorCourse({ listOfCourses = [] }) {
                   <TableRow className="border-b" key={course?.id}>
                     <TableCell className="p-4 font-medium">
                       {course?.title}
+                    </TableCell>
+                    <TableCell className="p-4">
+                      {course?.students?.length || 0}
                     </TableCell>
                     <TableCell className="p-4">{course?.pricing}</TableCell>
                     <TableCell className="p-4">{course?.level}</TableCell>

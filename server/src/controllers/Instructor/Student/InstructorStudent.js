@@ -5,6 +5,7 @@ const prisma = new PrismaClient();
 // I want to fetch all students of a particular instructor
 export const getStudentsByInstructor = async (req, res) => {
   const userId = req.userId; // ID of the instructor
+  console.log(userId, "userId for instructor postman");
 
   try {
     // Fetch courses, enrolled students, and payment details for the instructor

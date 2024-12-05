@@ -7,6 +7,7 @@ import {
   deleteCourse,
   getInstructorCourseCount,
   verifyAuthToken,
+  getStudentsByInstructor,
 } from "../../imports/imports.js";
 
 import { getPopularCourses } from "../../controllers/Instructor/course/course-controller.js";
@@ -14,6 +15,7 @@ import { getPopularCourses } from "../../controllers/Instructor/course/course-co
 const router = Router();
 
 //instructor-course routes
+router.get("/instructor/students", verifyAuthToken, getStudentsByInstructor);
 router.get("/home/popular-courses", getPopularCourses);
 router.post("/create-course", verifyAuthToken, createCourse);
 router.put("/update-course/:courseId", verifyAuthToken, updateCourse);

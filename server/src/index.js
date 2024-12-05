@@ -11,8 +11,6 @@ import assignmentGen from "./Routes/openai.js";
 import studentCourseRoutes from "./Routes/course/student/student-course-routes.js";
 
 import studentCoursePaymentRoutes from "./Routes/course/student/Payments.js";
-import { getStudentsByInstructor } from "./controllers/Instructor/Student/InstructorStudent.js";
-import { verifyAuthToken } from "./imports/imports.js";
 const app = express();
 dotenv.config();
 
@@ -23,8 +21,6 @@ app.use(
     methods: ["GET", "POST", "DELETE", "PATCH", "PUT"],
   }),
 );
-
-app.get("/api/instructor/students", getStudentsByInstructor);
 
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());

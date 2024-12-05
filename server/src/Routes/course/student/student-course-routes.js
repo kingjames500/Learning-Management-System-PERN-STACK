@@ -3,10 +3,10 @@ import {
   getAllAvaliableCourses,
   getASingleCourseByStudent,
   verifyAuthToken,
+  purchasedCourseDetailsForLearning,
 } from "../../../imports/imports.js";
 
 import studentEnrolledCourses from "../../../controllers/Student/Course/EnrolledCourse.js";
-import { getCurrentPurchasedCourseByStudent } from "../../../controllers/Student/Course/courseProgress.js";
 
 const router = Router();
 
@@ -20,7 +20,7 @@ router.get(
 router.get(
   "/student/course-learning-progress/:courseId",
   verifyAuthToken,
-  getCurrentPurchasedCourseByStudent,
+  purchasedCourseDetailsForLearning,
 );
 
 router.get(

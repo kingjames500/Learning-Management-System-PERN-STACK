@@ -20,6 +20,8 @@ import {
   getASingleCourse,
   updateCourse,
 } from "../controllers/Instructor/course/course-controller.js";
+
+import { purchasedCourseDetailsForLearning } from "../controllers/Student/Course/PurchasedCourseDetails.js";
 // helper functions are imported here and exported to be used in other files.
 import {
   uploadMediaToCloudinary,
@@ -34,12 +36,15 @@ import {
   getASingleCourseByStudent,
   getAllAvaliableCourses,
 } from "../controllers/Student/Course/studentCourse.js";
+import { getStudentsByInstructor } from "../controllers/Instructor/Student/InstructorStudent.js";
 
 export {
   PrismaClient,
+  purchasedCourseDetailsForLearning,
   getAllAvaliableCourses,
   getASingleCourseByStudent,
   getInstructorCourseCount,
+  getStudentsByInstructor,
   createCourse,
   getASingleCourse,
   updateCourse,

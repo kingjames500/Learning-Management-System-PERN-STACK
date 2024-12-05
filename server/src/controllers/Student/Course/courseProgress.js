@@ -36,48 +36,4 @@ const resetCourseProgress = async (req, res) => {
   }
 };
 
-const getCurrentPurchasedCourseByStudent = async (req, res) => {
-  try {
-    const { courseId } = req.params;
-    const userId = req.userId;
-
-    const checkIfCourseIsPurchased = await client.payment.findFirst({
-      where: {
-        courseId,
-        userId,
-        status: "requested",
-      },
-    });
-
-    if (checkIfCourseIsPurchased) {
-      const fetchCourse = await client.course.findFirst({
-        where: {
-          id: courseId,
-        },
-        include: {
-          curriculum: true,
-        },
-      });
-
-      return res.status(200).json({
-        success: true,
-        data: fetchCourse,
-      });
-    } else {
-      return res.status(400).json({
-        message: "Course not purchased by the student",
-      });
-    }
-  } catch (error) {
-    return res.status(500).json({
-      message: error.message,
-    });
-  }
-};
-
-export {
-  markLectureAsViewed,
-  getCurrentCourseProgress,
-  resetCourseProgress,
-  getCurrentPurchasedCourseByStudent,
-};
+export { markLectureAsViewed, getCurrentCourseProgress, resetCourseProgress };

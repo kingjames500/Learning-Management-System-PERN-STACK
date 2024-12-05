@@ -7,21 +7,20 @@ datasource db {
   url      = env("DATABASE_URL") // Database URL from .env file
 }
 
-enum PaymentStatus {
-  requested
-  paid
-  rejected
-}
 
-model Lecture {
-  id          String  @id @default(uuid())
-  title       String
-  videoUrl    String
-  public_id   String
-  freePreview Boolean
-  courseId    String
-  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  lectureProgress LectureProgress[]
+
+model User {
+  id              String              @id @default(uuid())
+  firstName       String
+  lastName        String
+  username        String              @unique
+  email           String              @unique
+  password        String
+  phoneNumber     String              @default("0740960259")
+  role            String              @default("student") // 'student', 'instructor', etc.
+  coursesEnrolled CourseEnrollment[]
+  payments        Payment[]
+  progress        CourseProgress[]
 }
 
 model Course {
@@ -46,18 +45,15 @@ model Course {
   progress        CourseProgress[]
 }
 
-model User {
-  id              String              @id @default(uuid())
-  firstName       String
-  lastName        String
-  username        String              @unique
-  email           String              @unique
-  password        String
-  phoneNumber     String              @default("0740960259")
-  role            String              @default("student") // 'student', 'instructor', etc.
-  coursesEnrolled CourseEnrollment[]
-  payments        Payment[]
-  progress        CourseProgress[]
+model Lecture {
+  id          String  @id @default(uuid())
+  title       String
+  videoUrl    String
+  public_id   String
+  freePreview Boolean
+  courseId    String
+  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lectureProgress LectureProgress[]
 }
 
 model CourseEnrollment {
@@ -68,6 +64,28 @@ model CourseEnrollment {
   @@id([courseId, userId])
 }
 
+enum PaymentStatus {
+  requested
+  paid
+  rejected
+}
+model Payment {
+  id               String        @id @default(uuid())
+  userId           String
+  courseId         String
+  amount           String
+  phoneNumber      String
+  mpesaReceiptNumber String?
+  status           PaymentStatus @default(requested)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  user             User          @relation(fields: [userId], references: [id])
+  course           Course        @relation(fields: [courseId], references: [id])
+}
+
+
+
+// to be implemented very soon
 model CourseProgress {
   id               String            @id @default(uuid())
   userId           String
@@ -93,16 +111,3 @@ model LectureProgress {
   @@unique([courseProgressId, lectureId]) // Ensure one record per lecture per course progress
 }
 
-model Payment {
-  id               String        @id @default(uuid())
-  userId           String
-  courseId         String
-  amount           String
-  phoneNumber      String
-  mpesaReceiptNumber String?
-  status           PaymentStatus @default(requested)
-  createdAt        DateTime      @default(now())
-  updatedAt        DateTime      @updatedAt
-  user             User          @relation(fields: [userId], references: [id])
-  course           Course        @relation(fields: [courseId], references: [id])
-}

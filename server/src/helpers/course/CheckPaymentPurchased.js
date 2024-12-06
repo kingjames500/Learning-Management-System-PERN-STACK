@@ -2,21 +2,16 @@ import { PrismaClient } from "../../imports/imports.js";
 
 const client = new PrismaClient();
 
-const checkCoursePurchasePaymentStatus = async (courseId, userId) => {
+const checkCoursePurchasePaymentStatus = async (userId) => {
   try {
-    const checkIfCurrentCourseIsPurchasedByCurrentStudent =
-      await client.payment.findFirst({
-        where: {
-          courseId: courseId,
-          userId: userId,
-          status: "paid",
-        },
-      });
-    console.log(checkIfCurrentCourseIsPurchasedByCurrentStudent, "backend");
-    return !!checkIfCurrentCourseIsPurchasedByCurrentStudent;
+    const coursePurchase = await client.courseEnrollment.findMany({
+      where: {
+        userId: userId,
+      },
+    });
+    return coursePurchase;
   } catch (error) {
-    console.error("Error checking course purchase status:", error);
-    throw new Error("Internal Server Error");
+    throw new Error(error.message);
   }
 };
 

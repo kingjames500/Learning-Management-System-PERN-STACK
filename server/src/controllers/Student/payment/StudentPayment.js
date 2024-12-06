@@ -23,8 +23,8 @@ const stkSimulate = async (req, res) => {
         PartyA: `254${phoneNumber}`,
         PartyB: 174379,
         PhoneNumber: `254${phoneNumber}`,
-        CallBackURL: "https://0a9c-41-89-243-5.ngrok-free.app/api/callback",
-        AccountReference: "CompanyXLTD",
+        CallBackURL: process.env.CALLBACK_URL,
+        AccountReference: "Test",
         TransactionDesc: "Payment of X",
       },
       {

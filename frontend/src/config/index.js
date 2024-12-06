@@ -25,7 +25,7 @@ export const signUpFormControls = [
 export const signInFormControls = [
   {
     name: "userEmail",
-    label: "User Email",
+    label: "User Email wilfred",
     placeholder: "Enter your user email",
     type: "email",
     componentType: "input",

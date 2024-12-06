@@ -12,9 +12,7 @@ function Errors({
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 text-center px-4">
       <div className="bg-red-100 p-6 rounded-md shadow-md w-full max-w-md">
         <h1 className="text-2xl font-bold text-red-600 mb-2">Error</h1>
-        <p className="text-gray-700 mb-4">
-          {error?.message || "An error occurred."}
-        </p>
+        <p className="text-gray-700 mb-4">{error?.message}</p>
         <Link
           to={linkPath}
           className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600 transition"

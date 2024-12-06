@@ -178,6 +178,7 @@ function Register() {
 }
 
 function Login() {
+  const { authDataSignin, setAuthDataSignin } = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { setAuth } = useContext(AuthContext);

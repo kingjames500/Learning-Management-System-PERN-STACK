@@ -4,7 +4,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import apiUrl from "@/lib/apiUrl";
 import { Watch } from "lucide-react";
 import React, { useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 function StudentCourses() {
@@ -44,7 +44,6 @@ function StudentCourses() {
 
   return (
     <div className="p-4">
-      <h1 className="text-3xl font-bold mb-8">My Courses</h1>
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5">
         {studentEnrolledCourses && studentEnrolledCourses.length > 0 ? (
           studentEnrolledCourses.map((enrollment) => (
@@ -76,7 +75,15 @@ function StudentCourses() {
             </Card>
           ))
         ) : (
-          <h1 className="text-3xl font-bold">No Courses found</h1>
+          <div className="flex flex-col items-center justify-center">
+            <h1 className="text-3xl font-bold mb-4">Please enroll</h1>
+            <Link
+              to="/student"
+              className="text-blue-500 hover:text-blue-700 transition duration-300 ease-in-out"
+            >
+              Click here to select and enroll in a course
+            </Link>
+          </div>
         )}
       </div>
     </div>

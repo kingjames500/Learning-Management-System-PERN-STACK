@@ -1,30 +1,14 @@
 import { StudentContext } from "@/components/Context/StudentContext/StudentContext";
+import Errors from "@/components/Error/Error";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import VideoPlayer from "@/components/Video/VideoPlayer";
 import apiUrl from "@/lib/apiUrl";
+import { useQuery } from "react-query";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import React, { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-
-async function getStudentCourseProgress(courseId) {
-  const response = await fetch(
-    `${apiUrl}/student/course-learning-progress/${courseId}`,
-    {
-      credentials: "include",
-    },
-  );
-
-  if (response.ok === false) {
-    console.log("Failed to get course progress");
-    return;
-  }
-
-  const data = await response.json();
-  console.log("course progress", data);
-  return data;
-}
+import React, { useContext, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function StudentEnrolledCourseDetails() {
   const { courseId } = useParams();
@@ -32,18 +16,43 @@ export default function StudentEnrolledCourseDetails() {
     useContext(StudentContext);
 
   const [isSideBarOpen, setIsSideBarOpen] = useState(true);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    async function fetchCourseProgress() {
-      if (courseId) {
-        const data = await getStudentCourseProgress(courseId);
-        if (data?.success) {
-          setStudentCurrentCourseProgess(data.data);
-        }
+  //  using useQuery instead of a fetch function
+
+  const { isLoading, isError, error, data } = useQuery({
+    queryKey: ["student-course-learning-progress", courseId],
+    queryFn: async () => {
+      const response = await fetch(
+        `${apiUrl}/student/course-learning-progress/${courseId}`,
+        {
+          credentials: "include",
+        },
+      );
+
+      if (response.ok === false) {
+        const error = await response.json();
+        throw new Error(error.message);
       }
-    }
-    fetchCourseProgress();
-  }, [courseId]);
+
+      const data = await response.json();
+      return data;
+    },
+
+    onSuccess: (data) => {
+      setStudentCurrentCourseProgess(data?.data);
+    },
+  });
+
+  if (isError) {
+    return (
+      <Errors
+        error={error}
+        linkPath="/student/enrolled-courses"
+        linkText="Go to My Courses"
+      />
+    );
+  }
 
   return (
     <div className="flex flex-col h-screen bg-white text-gray-800">
@@ -54,13 +63,13 @@ export default function StudentEnrolledCourseDetails() {
             className="flex items-center text-gray-700 hover:text-gray-900"
             variant="ghost"
             size="sm"
-            onClick={() => history.goBack()}
+            onClick={() => navigate("/student/enrolled-courses")}
           >
             <ChevronLeft className="h-4 w-4 mr-2" />
             Back To My Courses
           </Button>
           <h1 className="text-lg font-bold hidden md:block">
-            {studentCurrentCourseProgess?.title || "Loading..."}
+            {studentCurrentCourseProgess?.title}
           </h1>
         </div>
         <Button
@@ -127,17 +136,21 @@ export default function StudentEnrolledCourseDetails() {
             <TabsContent value="content">
               <ScrollArea className="h-full">
                 <div className="p-4 space-y-4">
-                  {/* {studentCurrentCourseProgess?.curriculum?.map((item) => (
-                    <div
-                      className="flex items-center space-x-2 text-sm text-gray-600 hover:text-gray-800 font-medium cursor-pointer"
-                      key={item.id}
-                    >
-                      <ChevronRight className="h-4 w-4" />
-                      <span>{item.title}</span>
-                    </div>
-                  )) || (
-                      <p className="text-gray-500">No course content available.</p>
-                    )} */}
+                  {studentCurrentCourseProgess?.curriculum?.length > 0 ? (
+                    studentCurrentCourseProgess?.curriculum?.map((item) => (
+                      <div
+                        className="flex items-center space-x-2 text-sm text-gray-600 hover:text-gray-800 font-medium cursor-pointer"
+                        key={item.id}
+                      >
+                        <ChevronRight className="h-4 w-4" />
+                        <span>{item.title}</span>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-gray-500">
+                      No course content available.
+                    </p>
+                  )}
                 </div>
               </ScrollArea>
             </TabsContent>

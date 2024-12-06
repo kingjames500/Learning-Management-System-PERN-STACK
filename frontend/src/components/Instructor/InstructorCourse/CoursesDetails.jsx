@@ -219,6 +219,8 @@ function CourseLandingPage() {
   const { courseLandingFormData, setCourseLandingFormData } =
     useContext(InstructorContext);
 
+  console.log("courseLanding Form data", courseLandingFormData);
+
   return (
     <Card className="flex flex-1 flex-col p-6 bg-white shadow-lg rounded-lg">
       <CardHeader className="space-y-4">

@@ -43,16 +43,17 @@ function ViewCourse() {
   const location = useLocation();
   const phoneNumber = userDetailsStore((state) => state.user.phoneNumber);
 
+  console.log("courseId", courseId);
+
   const formattedNumber = phoneNumber.startsWith("0")
     ? phoneNumber.substring(1)
     : phoneNumber;
 
   // setting details to be null if not on the required page and path
-
-  useEffect(() => {
-    if (!location.pathname.includes("/student/course"))
-      setStudentViewCourseDetails(null), setCurrentCourseDetailsId(null);
-  }, [location.pathname]);
+  // useEffect(() => {
+  //   if (!location.pathname.includes(`/student/course/${courseId}`))
+  //     // setStudentViewCourseDetails(null), setCurrentCourseDetailsId(null);
+  // }, [location.pathname]);
 
   // fetch course details
   useEffect(() => {
@@ -72,6 +73,7 @@ function ViewCourse() {
 
     getCourseDetails();
   }, [currentCourseDetailsId]);
+  // console.log("currentCourseDetailsId", currentCourseDetailsId);
 
   function handleSetFreePreview() {}
 
@@ -130,7 +132,7 @@ function ViewCourse() {
     mutate(paymentsAndEnrollCourse);
   }
 
-  if (isLoading || isEnrolling) {
+  if (isLoading) {
     return <div className=" mx-auto p-4">Fetching data......</div>;
   }
 

@@ -174,7 +174,7 @@ function CourseSettings() {
         const data = await response.json();
         setCourseLandingFormData({
           ...courseLandingFormData,
-          image: data.data?.url,
+          image: data.data?.secure_url,
         });
       } catch (error) {
         toast.error("There was an error uploading the image", {
@@ -426,7 +426,7 @@ function CoursesDetails() {
         </h1>
         <Button
           className="mb-4 px-4 py-2 bg-blue-600 text-white rounded-md shadow hover:bg-blue-700"
-          // disabled={!validateFormData()}
+          disabled={!validateFormData}
           onClick={handleCourseSubmit}
         >
           submit

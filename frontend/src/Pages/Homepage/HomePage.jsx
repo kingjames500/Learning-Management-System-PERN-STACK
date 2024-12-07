@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { User } from "lucide-react";
 
 const HomePage = () => {
+  console.log(apiUrl, "apiUrl");
   const { data, isLoading, error } = useQuery({
     queryKey: "popularCourses",
     queryFn: async () => {

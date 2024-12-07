@@ -20,6 +20,7 @@ import userDetailsStore from "@/Store/userStoreDetails.js";
 import { AuthContext } from "../Context/authContext/authContext.jsx";
 
 function Register() {
+  console.log(apiUrl, "auth apiUrl");
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");

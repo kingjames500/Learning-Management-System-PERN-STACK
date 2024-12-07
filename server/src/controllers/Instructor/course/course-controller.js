@@ -7,6 +7,8 @@ const createCourse = async (req, res) => {
     const userId = req.userId;
     const courseData = req.body;
 
+    // let me see if the userId role is an instructor
+
     if (!Array.isArray(courseData.curriculum)) {
       return res.status(400).json({
         message: "Curriculum must be an array of lectures.",

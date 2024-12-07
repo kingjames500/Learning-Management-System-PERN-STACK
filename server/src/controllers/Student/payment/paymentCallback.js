@@ -19,19 +19,6 @@ const paymentCallback = async (req, res) => {
 
     console.log(resultCode);
 
-    if (resultCode === 1037) {
-      await client.payment.update({
-        where: {
-          phoneNumber,
-        },
-        data: {
-          status: "failed",
-          amount,
-          phoneNumber,
-          mpesaReceiptNumber: "failed",
-        },
-      });
-    }
     // if (resultCode === 0) {
     //   await client.payment.update({
     //     where: {

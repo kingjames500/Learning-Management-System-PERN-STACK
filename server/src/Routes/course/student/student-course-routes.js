@@ -10,7 +10,7 @@ import studentEnrolledCourses from "../../../controllers/Student/Course/Enrolled
 
 const router = Router();
 
-router.get("/student/courses", verifyAuthToken, getAllAvaliableCourses);
+router.get("/student/courses", getAllAvaliableCourses);
 router.get(
   "/student/course/:courseId",
   verifyAuthToken,

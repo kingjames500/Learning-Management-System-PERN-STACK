@@ -53,13 +53,6 @@ const stkSimulate = async (req, res) => {
       },
     });
 
-    await client.courseEnrollment.create({
-      data: {
-        courseId,
-        userId,
-      },
-    });
-
     res.status(200).json({
       sucess: true,
       message:

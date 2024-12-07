@@ -12,6 +12,7 @@ const uploadMediaToCloudinary = async (filePath) => {
       resource_type: "auto",
       folder: "Learning",
     });
+
     return results;
   } catch (error) {
     res.status(500).json({ message: error.message });

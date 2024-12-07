@@ -57,11 +57,11 @@ model Lecture {
 }
 
 model CourseEnrollment {
+  id      String  @id @default(uuid())
   courseId String
   userId   String
   course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
   user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  @@id([courseId, userId])
 }
 
 enum PaymentStatus {
@@ -76,6 +76,7 @@ model Payment {
   amount           String
   phoneNumber      String
   mpesaReceiptNumber String?
+  CheckoutRequestID String?
   status           PaymentStatus @default(requested)
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt

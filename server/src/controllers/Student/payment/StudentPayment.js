@@ -9,6 +9,7 @@ const client = new PrismaClient();
 
 const stkSimulate = async (req, res) => {
   const userId = req.userId;
+  console.log(userId);
   const { phoneNumber, amount, courseId } = req.body;
   const access_token = req.access_token;
   try {
@@ -34,8 +35,6 @@ const stkSimulate = async (req, res) => {
       },
     );
 
-    console.log("STK Push Response:", response.data);
-
     if (response.data.ResponseCode !== "0") {
       res.status(400).json({
         message: "Failed to initiate stk push request",
@@ -46,8 +45,9 @@ const stkSimulate = async (req, res) => {
     await client.payment.create({
       data: {
         amount: amount.toString(), // Ensure amount is a string
-        status: "requested", // Use the correct status from enum
+        status: "requested",
         courseId,
+        checkoutRequestId: response.data.CheckoutRequestID,
         userId,
         phoneNumber,
       },

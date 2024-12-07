@@ -6,8 +6,13 @@ import { Router, verifyAuthToken } from "../../../imports/imports.js";
 
 const router = Router();
 
-router.post("/student/course/payment", generateToken, stkSimulate);
+router.post(
+  "/student/course/payment",
+  generateToken,
+  verifyAuthToken,
+  stkSimulate,
+);
 
-router.post("/callback", paymentCallback);
+router.post("/mpesa/callback", paymentCallback);
 
 export default router;

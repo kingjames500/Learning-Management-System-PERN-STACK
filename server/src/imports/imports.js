@@ -37,9 +37,11 @@ import {
   getAllAvaliableCourses,
 } from "../controllers/Student/Course/studentCourse.js";
 import { getStudentsByInstructor } from "../controllers/Instructor/Student/InstructorStudent.js";
+import { checkStudentPaymentStatusFromCallback } from "../controllers/Student/payment/checkPaymentStatus.js";
 
 export {
   PrismaClient,
+  checkStudentPaymentStatusFromCallback,
   purchasedCourseDetailsForLearning,
   getAllAvaliableCourses,
   getASingleCourseByStudent,

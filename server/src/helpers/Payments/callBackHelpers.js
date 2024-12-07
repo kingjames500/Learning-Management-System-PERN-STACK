@@ -5,9 +5,11 @@ const client = new PrismaClient();
 export const lookForCheckoutRequestId = async (checkoutRequestId) => {
   const payment = await client.payment.findUnique({
     where: {
-      checkoutRequestId,
+      CheckoutRequestID: checkoutRequestId,
     },
   });
+
+  console.log(firstPayment, "from look for checkout request id");
 
   return payment;
 };

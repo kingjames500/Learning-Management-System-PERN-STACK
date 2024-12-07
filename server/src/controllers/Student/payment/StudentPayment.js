@@ -47,7 +47,7 @@ const stkSimulate = async (req, res) => {
         amount: amount.toString(), // Ensure amount is a string
         status: "requested",
         courseId,
-        checkoutRequestId: response.data.CheckoutRequestID,
+        CheckoutRequestID: response.data.CheckoutRequestID,
         userId,
         phoneNumber,
       },
@@ -55,6 +55,7 @@ const stkSimulate = async (req, res) => {
 
     res.status(200).json({
       sucess: true,
+      CheckoutRequestID: response.data.CheckoutRequestID,
       message:
         "stk push request sent successfully. Enter pin to complete transaction",
     });

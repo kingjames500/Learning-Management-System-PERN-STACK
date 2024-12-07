@@ -76,7 +76,7 @@ model Payment {
   amount           String
   phoneNumber      String
   mpesaReceiptNumber String?
-  CheckoutRequestID String?
+  CheckoutRequestID String?    @unique
   status           PaymentStatus @default(requested)
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt

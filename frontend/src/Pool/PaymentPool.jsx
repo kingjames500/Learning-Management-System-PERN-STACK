@@ -2,24 +2,25 @@ import apiUrl from "@/lib/apiUrl";
 import { Loader2 } from "lucide-react";
 import React from "react";
 
-export const paymentStatusUpdate = async (checkoutRequestId) => {
+export const paymentStatusUpdate = async (checkoutRequestID) => {
   try {
     const response = await fetch(
-      `${apiUrl}/student/payment-status/${checkoutRequestId}`,
+      `${apiUrl}/student/payment-status/${checkoutRequestID}`,
       {
         credentials: "include",
       },
     );
-    console.log("reponse from payment status", response);
-    if (response.ok === false) {
+    console.log("response from payment status", response);
+    if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message);
+      throw new Error(error.message || "Unknown error occurred");
     }
     const data = await response.json();
     console.log("update payment status", data);
     return data;
   } catch (error) {
-    throw new Error(error.message);
+    console.error("error while updating payment status", error);
+    return { success: false, message: error.message };
   }
 };
 

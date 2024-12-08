@@ -134,15 +134,25 @@ function ViewCourse() {
 
   // on this section I will be checking the payment status and the pooling status
   const checkoutRequestID = localStorage.getItem("checkoutRequestID");
-  const [paymentDelay, setPaymentDelay] = useState(10000);
+  const [paymentDelay, setPaymentDelay] = useState(2000);
 
   useInterval(async () => {
     if (checkoutRequestID) {
       const data = await paymentStatusUpdate(checkoutRequestID);
-      console.log("data from useInterval", data);
-      if (data && data.success) {
-        setStatusMessage(data.message);
-        setPaymentDelay(null);
+      if (data && data?.success) {
+        if (data.message === "requested") {
+          setStatusMessage("Stk push was successful, please enter your pin");
+        }
+        if (data.message === "paid") {
+          setStatusMessage(
+            "Payment was successful, you can now access the course",
+          );
+          setPaymentDelay(null);
+        }
+        if (data.message === "rejected") {
+          setStatusMessage("Payment was rejected, please try again");
+          setPaymentDelay(null);
+        }
       }
     }
   }, paymentDelay);

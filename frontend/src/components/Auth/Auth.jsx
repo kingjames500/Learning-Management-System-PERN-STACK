@@ -26,6 +26,7 @@ function Register() {
   const [lastName, setLastName] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const { mutate, isLoading } = useMutation({
@@ -77,6 +78,7 @@ function Register() {
       lastName,
       username,
       password,
+      phoneNumber,
       role: "student",
     };
 
@@ -141,6 +143,16 @@ function Register() {
           </div>
         </div>
 
+        <div className="space-y-1">
+          <Label className="text-indigo-600">Phone Number</Label>
+          <Input
+            className="text-gray-900 placeholder-gray-400 border-indigo-300 focus:ring-indigo-500 focus:border-indigo-500"
+            type="text"
+            placeholder="Enter your phone number"
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
+          />
+        </div>
         {/* Password and Confirm Password */}
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-1">

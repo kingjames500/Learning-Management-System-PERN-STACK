@@ -1,5 +1,4 @@
 import { GraduationCap, TvMinimalPlay } from "lucide-react";
-import { useContext } from "react";
 import { Link } from "react-router-dom";
 import userDetailsStore from "@/Store/userStoreDetails";
 import useLogout from "@/lib/logout";

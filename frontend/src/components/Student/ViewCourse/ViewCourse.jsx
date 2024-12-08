@@ -49,10 +49,6 @@ function ViewCourse() {
     ? phoneNumber.substring(1)
     : phoneNumber;
 
-  // state management for payment status pool
-  const [isVisible, setIsVisible] = useState(false);
-  const [statusMessage, setStatusMessage] = useState("");
-
   // fetch course details
   useEffect(() => {
     if (courseId) setCurrentCourseDetailsId(courseId);
@@ -129,16 +125,22 @@ function ViewCourse() {
     mutate(paymentsAndEnrollCourse);
   }
   const handleClosePool = () => {
+    checkoutRequestID && localStorage.removeItem("checkoutRequestID");
+    setPaymentDelay(null);
     setIsVisible(false);
   };
 
   // on this section I will be checking the payment status and the pooling status
   const checkoutRequestID = localStorage.getItem("checkoutRequestID");
   const [paymentDelay, setPaymentDelay] = useState(2000);
+  // state management for payment status pool
+  const [isVisible, setIsVisible] = useState(false);
+  const [statusMessage, setStatusMessage] = useState("");
 
   useInterval(async () => {
     if (checkoutRequestID) {
       const data = await paymentStatusUpdate(checkoutRequestID);
+      console.log(data, "from payment status update");
       if (data && data?.success) {
         if (data.message === "requested") {
           setStatusMessage("Stk push was successful, please enter your pin");
@@ -147,11 +149,21 @@ function ViewCourse() {
           setStatusMessage(
             "Payment was successful, you can now access the course",
           );
-          setPaymentDelay(null);
+
+          setTimeout(() => {
+            redirect("/student/enrolled-courses");
+          }, 2000);
+          handleClosePool();
+          return;
         }
         if (data.message === "rejected") {
           setStatusMessage("Payment was rejected, please try again");
-          setPaymentDelay(null);
+
+          setTimeout(() => {
+            redirect("/student");
+          }, 2000);
+          handleClosePool();
+          return;
         }
       }
     }
@@ -163,11 +175,8 @@ function ViewCourse() {
 
   return (
     <div className=" mx-auto p-4">
-      <PaymentStatusPool
-        isVisible={isVisible}
-        onClose={handleClosePool}
-        paymentStatus={statusMessage}
-      />
+      {/* showing confetti */}
+      <PaymentStatusPool isVisible={isVisible} paymentStatus={statusMessage} />
       <div className="bg-blue-900 text-white p-8 rounded-t-lg">
         <h1 className="text-4xl font-bold">
           {studentViewCourseDetails?.title}

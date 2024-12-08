@@ -1,6 +1,7 @@
 import apiUrl from "@/lib/apiUrl";
 import { Loader2 } from "lucide-react";
-import React from "react";
+import React, { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 export const paymentStatusUpdate = async (checkoutRequestID) => {
   try {
@@ -24,28 +25,20 @@ export const paymentStatusUpdate = async (checkoutRequestID) => {
   }
 };
 
-function PaymentPool({ isVisible, onClose, paymentStatus }) {
+function PaymentPool({ isVisible, paymentStatus }) {
   if (!isVisible) return null;
-
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      {" "}
-      <div className="bg-white p-6 rounded-lg shadow-md w-96">
-        {" "}
-        <h3 className="text-xl font-bold mb-4">Payment Status</h3>{" "}
-        <Loader2 size={32} />{" "}
-        <div className="flex items-center space-x-4">
-          {" "}
-          <p className="text-green-600 font-medium">{paymentStatus}</p>{" "}
-        </div>{" "}
-        <button
-          className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
-          onClick={onClose}
-        >
-          {" "}
-          Close{" "}
-        </button>{" "}
-      </div>{" "}
+      <div className="bg-white p-6 rounded-lg shadow-lg w-96 max-w-sm mx-auto">
+        <h3 className="text-xl font-bold mb-4 text-center">Payment Status</h3>
+        <div className="flex justify-center items-center mb-4">
+          {/* Progress Spinner */}
+          <div className="animate-spin rounded-full border-t-4 border-b-4 border-gray-300 w-10 h-10 border-t-blue-500"></div>
+        </div>
+        <div className="flex justify-center mb-4">
+          <p className="text-xl text-green-500 font-medium">{paymentStatus}</p>
+        </div>
+      </div>
     </div>
   );
 }

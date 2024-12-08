@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
 import { GraduationCap } from "lucide-react";
-import { Link } from "react-router-dom";
 import userDetailsStore from "@/Store/userStoreDetails";
 
 // Ensure the correct path

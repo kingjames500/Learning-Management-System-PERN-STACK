@@ -9,7 +9,50 @@ export const lookForCheckoutRequestId = async (checkoutRequestId) => {
     },
   });
 
-  console.log(firstPayment, "from look for checkout request id");
-
   return payment;
+};
+
+// updating the payment status to paid and adding the mpesa receipt number, amount and phone number
+export const updatePaymentOnRecievingCallbackResponse = async (
+  payment,
+  mpesaReceiptNumber,
+  amount,
+) => {
+  try {
+    const paymentToUpdate = await client.payment.update({
+      where: {
+        CheckoutRequestID: payment.CheckoutRequestID,
+      },
+      data: {
+        status: "paid",
+        mpesaReceiptNumber,
+        amount: amount.toString(),
+      },
+    });
+    console.log("payment updated from the callback helpers", paymentToUpdate);
+    return paymentToUpdate;
+  } catch (error) {
+    console.log("Error from updte payment on callback helpers", error);
+    return;
+  }
+};
+
+// updating the payment status to failed
+
+export const updatePaymentOnFailure = async (payment) => {
+  try {
+    const paymentToUpdate = await client.payment.update({
+      where: {
+        CheckoutRequestID: payment.CheckoutRequestID,
+      },
+      data: {
+        status: "rejected",
+      },
+    });
+    console.log("payment updated from the callback helpers", paymentToUpdate);
+    return paymentToUpdate;
+  } catch (error) {
+    console.log("Error from updte payment on callback helpers", error);
+    return;
+  }
 };

@@ -1,74 +1,13 @@
 import { courseEnrollmentByStudent } from "../../../helpers/course/EnrollCourse.js";
-import { lookForCheckoutRequestId } from "../../../helpers/Payments/callBackHelpers.js";
-import { PrismaClient } from "../../../imports/imports.js";
-
-const client = new PrismaClient();
-
-// const paymentCallback = async (req, res) => {
-//   console.log("call back url hit from our server");
-//   const callBackData = req.body;
-//   console.log("callbackData", callBackData);
-//   console.log("Resultscode", callBackData.Body.stkCallback.ResultCode);
-//   try {
-//     const resultCode = callBackData.Body.stkCallback.ResultCode;
-//     const checkoutRequestId = callBackData.Body.stkCallback.CheckoutRequestID;
-//     const amount = callBackData.Body.stkCallback.CallbackMetadata.Item[0].Value;
-//     const phoneNumber =
-//       callBackData.Body.stkCallback.CallbackMetadata.Item[4].Value;
-//     const mpesaReceiptNumber =
-//       callBackData.Body.stkCallback.CallbackMetadata.Item[1].Value;
-
-//     switch (resultCode) {
-//       case 0:
-//         const payment = await lookForCheckoutRequestId(checkoutRequestId);
-
-//         if (payment) {
-//           await client.payment.update({
-//             where: {
-//               CheckoutRequestID: checkoutRequestId,
-//             },
-//             data: {
-//               status: "completed",
-//               mpesaReceiptNumber,
-//               amount,
-//               phoneNumber,
-//             },
-//           });
-
-//           await courseEnrollmentByStudent(payment.userId, payment.courseId);
-//         }
-//         break;
-//       case 1032:
-//         await client.payment.update({
-//           where: { CheckoutRequestID: checkoutRequestId },
-//           data: { status: "rejected" },
-//         });
-//         console.log(resultCode, "from switch case")
-//         break;
-//       case 2001:
-//         await client.payment.update({
-//           where: { CheckoutRequestID: checkoutRequestId },
-//           data: { status: "rejected" },
-//         });
-//         break;
-//       default:
-//         await client.payment.update({
-//           where: {CheckoutRequestID: checkoutRequestId },
-//           data: { status: "rejected" },
-//         });
-//         console.log("the checkout from default clause",checkoutRequestId)
-//         break;
-//     }
-//   } catch (error) {
-//     res.status(500).json({
-//       error: "Internal server error",
-//     });
-//     return;
-//   }
-// };
+import {
+  lookForCheckoutRequestId,
+  updatePaymentOnFailure,
+  updatePaymentOnRecievingCallbackResponse,
+} from "../../../helpers/Payments/callBackHelpers.js";
 
 const paymentCallback = async (req, res) => {
   const callBackData = req.body;
+  console.log(callBackData, "from callback data");
 
   try {
     const resultCode = callBackData.Body.stkCallback.ResultCode;
@@ -79,49 +18,36 @@ const paymentCallback = async (req, res) => {
       callBackData.Body.stkCallback.CallbackMetadata?.Item[4]?.Value;
     const mpesaReceiptNumber =
       callBackData.Body.stkCallback.CallbackMetadata?.Item[1]?.Value;
-
     if (!checkoutRequestId) {
       console.error("CheckoutRequestID is missing in callback data.");
       return res.status(400).json({ error: "Invalid callback data" });
     }
 
+    const payment = await lookForCheckoutRequestId(checkoutRequestId);
     if (resultCode === 0) {
-      console.log("Payment successful:", checkoutRequestId);
-
-      const payment = await lookForCheckoutRequestId(checkoutRequestId);
-      if (payment) {
-        await client.payment.update({
-          where: {
-            CheckoutRequestID: checkoutRequestId,
-          },
-          data: {
-            status: "paid",
-            mpesaReceiptNumber,
-            amount,
-            phoneNumber,
-          },
-        });
-
-        // Enroll user in course
-        await courseEnrollmentByStudent(payment.userId, payment.courseId);
+      console.log("endpoint with the correct resultCode", resultCode);
+      if (!payment) {
+        console.error("Payment not found for the given CheckoutRequestID.");
+        return res.status(404).json({ error: "Payment not found" });
       }
-    } else {
-      console.log(
-        "Payment rejected:",
-        checkoutRequestId,
-        "ResultCode:",
-        resultCode,
+      const updatedPayment = await updatePaymentOnRecievingCallbackResponse(
+        payment,
+        mpesaReceiptNumber,
+        amount,
       );
-      await client.payment.update({
-        where: { CheckoutRequestID: checkoutRequestId },
-        data: { status: "rejected" },
-      });
-    }
 
-    res.status(200).json({ success: true });
+      console.log("first updated payment on resultCode 0", updatedPayment);
+      await courseEnrollmentByStudent(
+        updatedPayment.userId,
+        updatedPayment.courseId,
+      );
+    } else {
+      const updatedPayment = await updatePaymentOnFailure(payment);
+      console.log("payment updated on failure", updatedPayment);
+      return;
+    }
   } catch (error) {
-    console.error("Error in callback:", error);
-    res.status(500).json({ error: "Internal server error" });
+    console.log(error, "from payment callback catch clause");
   }
 };
 

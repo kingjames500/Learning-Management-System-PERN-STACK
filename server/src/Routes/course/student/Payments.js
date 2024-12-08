@@ -12,7 +12,7 @@ const router = Router();
 // route fro checking payment status
 
 router.get(
-  "/student/payment-status",
+  "/student/payment-status/:checkoutRequestID",
   verifyAuthToken,
   checkStudentPaymentStatusFromCallback,
 );

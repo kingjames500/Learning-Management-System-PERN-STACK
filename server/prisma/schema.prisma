@@ -16,7 +16,7 @@ model User {
   username        String              @unique
   email           String              @unique
   password        String
-  phoneNumber     String              @default("0740960259")
+  phoneNumber     String              @unique
   role            String              @default("student") // 'student', 'instructor', etc.
   coursesEnrolled CourseEnrollment[]
   payments        Payment[]

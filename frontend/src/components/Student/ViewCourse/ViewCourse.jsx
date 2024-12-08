@@ -2,12 +2,14 @@ import { StudentContext } from "@/components/Context/StudentContext/StudentConte
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import VideoPlayer from "@/components/Video/VideoPlayer";
+import useInterval from "@/hooks/UseInterval";
 import apiUrl from "@/lib/apiUrl";
+import PaymentStatusPool, { paymentStatusUpdate } from "@/Pool/PaymentPool";
 import userDetailsStore from "@/Store/userStoreDetails";
 import { CheckCircle, Globe, Lock, PlayCircle } from "lucide-react";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useMutation } from "react-query";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 
 const fetchCourseDetails = async (courseId) => {
@@ -40,20 +42,16 @@ function ViewCourse() {
   } = useContext(StudentContext);
   const redirect = useNavigate();
   const { courseId } = useParams();
-  const location = useLocation();
-  const phoneNumber = userDetailsStore((state) => state.user.phoneNumber);
 
-  console.log("courseId", courseId);
+  const phoneNumber = userDetailsStore((state) => state.user.phoneNumber);
 
   const formattedNumber = phoneNumber.startsWith("0")
     ? phoneNumber.substring(1)
     : phoneNumber;
 
-  // setting details to be null if not on the required page and path
-  // useEffect(() => {
-  //   if (!location.pathname.includes(`/student/course/${courseId}`))
-  //     // setStudentViewCourseDetails(null), setCurrentCourseDetailsId(null);
-  // }, [location.pathname]);
+  // state management for payment status pool
+  const [isVisible, setIsVisible] = useState(false);
+  const [statusMessage, setStatusMessage] = useState("");
 
   // fetch course details
   useEffect(() => {
@@ -105,15 +103,14 @@ function ViewCourse() {
         throw new Error(error.message);
       }
       const data = await response.json();
-
+      // saving checkoutRequestID to local storage
+      localStorage.setItem("checkoutRequestID", data.CheckoutRequestID);
       return data;
     },
     onSuccess: (data) => {
       if (data.sucess) {
-        toast.success("You have enrolled to this course successfully");
-        setTimeout(() => {
-          redirect("/student/enrolled-courses");
-        }, 2000);
+        setStatusMessage(data.message);
+        setIsVisible(true);
       }
     },
     onError: (error) => {
@@ -131,6 +128,24 @@ function ViewCourse() {
 
     mutate(paymentsAndEnrollCourse);
   }
+  const handleClosePool = () => {
+    setIsVisible(false);
+  };
+
+  // on this section I will be checking the payment status and the pooling status
+  const checkoutRequestID = localStorage.getItem("checkoutRequestID");
+  const [paymentDelay, setPaymentDelay] = useState(10000);
+
+  useInterval(async () => {
+    if (checkoutRequestID) {
+      const data = await paymentStatusUpdate(checkoutRequestID);
+      console.log("data from useInterval", data);
+      if (data && data.success) {
+        setStatusMessage(data.message);
+        setPaymentDelay(null);
+      }
+    }
+  }, paymentDelay);
 
   if (isLoading) {
     return <div className=" mx-auto p-4">Fetching data......</div>;
@@ -138,6 +153,11 @@ function ViewCourse() {
 
   return (
     <div className=" mx-auto p-4">
+      <PaymentStatusPool
+        isVisible={isVisible}
+        onClose={handleClosePool}
+        paymentStatus={statusMessage}
+      />
       <div className="bg-blue-900 text-white p-8 rounded-t-lg">
         <h1 className="text-4xl font-bold">
           {studentViewCourseDetails?.title}
@@ -240,8 +260,12 @@ function ViewCourse() {
                   {studentViewCourseDetails?.pricing}
                 </span>
               </div>
-              <Button className="w-full" onClick={handleBuyCourseAndEnroll}>
-                Buy Now
+              <Button
+                className="w-full"
+                onClick={handleBuyCourseAndEnroll}
+                disabled={isEnrolling}
+              >
+                {isEnrolling ? "Processing..." : "Buy and Enroll"}
               </Button>
             </CardContent>
           </Card>

@@ -1,5 +1,5 @@
 import { initialSignInFormData } from "@/config";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { createContext } from "react";
 
 export const AuthContext = createContext(null);
@@ -10,10 +10,6 @@ export default function AuthProvider({ children }) {
     authenticate: false,
     user: null,
     role: null,
-  });
-
-  useEffect(() => {
-    const storedAuth = localStorage.getItem("auth");
   });
 
   return (

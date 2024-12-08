@@ -12,8 +12,10 @@ import QenerateAssignment from "./components/Instructor/InstructorAssignments/Qe
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import StudentViewCoursePage from "./Pages/Student/StudentViewCoursePage/StudentViewCoursePage";
 import StudentHomePage from "./Pages/Student/Home/StudentHomePage";
+
 import StudentEnrolledCourses from "./Pages/Student/StudentEnrolledCourses/StudentEnrolledCourses";
 import StudentEnrolledCourseDetails from "./Pages/Student/StudentEnrolledCourseDetails/StudentEnrolledCourseDetails";
+import PaymentStatusPool from "./Pool/PaymentPool";
 
 function App() {
   const client = new QueryClient();
@@ -23,6 +25,7 @@ function App() {
         <Toaster position="top-center" richColors duration={2000} />
         <Header />
         <Routes>
+          <Route path="/payment" element={<PaymentStatusPool />} />
           <Route
             path="/instructor/courses/new"
             element={

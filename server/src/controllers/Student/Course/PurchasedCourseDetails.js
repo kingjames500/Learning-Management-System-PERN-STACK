@@ -1,8 +1,8 @@
+import getAllCoursePurchasedByCurrentUser from "../../../helpers/course/getAllCoursePurchase.js";
+import getCourseProgessByCurrentUser from "../../../helpers/course/getCourseProgress.js";
 import { PrismaClient } from "../../../imports/imports.js";
-import checkCoursePurchasePaymentStatus from "../../../imports/HelperFunctionsImports.js";
-import courseProgessByCurrentUser from "../../../helpers/course/LectureAndCourseProgress.js";
-const client = new PrismaClient();
 
+const client = new PrismaClient();
 const purchasedCourseDetailsForLearning = async (req, res) => {
   const userId = req.userId;
   const { courseId } = req.params;
@@ -10,7 +10,7 @@ const purchasedCourseDetailsForLearning = async (req, res) => {
   try {
     // Checking if the course is purchased by the current user or not
     const studentPurchasedCourses =
-      await checkCoursePurchasePaymentStatus(userId);
+      await getAllCoursePurchasedByCurrentUser(userId);
     const isCurrentCoursePurchasedByCurrentUserOrNot =
       studentPurchasedCourses?.findIndex((item) => item.courseId === courseId) >
       -1;
@@ -24,10 +24,8 @@ const purchasedCourseDetailsForLearning = async (req, res) => {
     }
 
     // Checking if the user has started to learn the course or not
-    const courseProgressCheckByCurrentUser = await courseProgessByCurrentUser(
-      userId,
-      courseId,
-    );
+    const courseProgressCheckByCurrentUser =
+      await getCourseProgessByCurrentUser(userId, courseId);
     console.log(
       courseProgressCheckByCurrentUser,
       "courseProgressCheckByCurrentUser",
@@ -48,6 +46,9 @@ const purchasedCourseDetailsForLearning = async (req, res) => {
         return res.status(400).json({
           success: false,
           message: "Course not found",
+          data: {
+            isPurchased: false,
+          },
         });
       }
 
@@ -72,8 +73,8 @@ const purchasedCourseDetailsForLearning = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Error fetching course details for learning:", error);
-    return res.status(500).json({ message: "Internal Server Error" });
+    console.error("Error fetching course details for learning:", error.message);
+    return res.status(500).json({ message: error.message });
   }
 };
 

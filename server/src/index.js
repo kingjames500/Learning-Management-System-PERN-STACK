@@ -16,7 +16,7 @@ dotenv.config();
 
 app.use(
   cors({
-    origin: ["https://jimmymaina.fr.eu.org"],
+    origin: process.env.CLIENT_URL,
     credentials: true,
     methods: ["GET", "POST", "DELETE", "PATCH", "PUT"],
   }),

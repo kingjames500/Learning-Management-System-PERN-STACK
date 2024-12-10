@@ -85,8 +85,6 @@ model Payment {
 }
 
 
-
-// to be implemented very soon
 model CourseProgress {
   id               String            @id @default(uuid())
   userId           String
@@ -111,4 +109,5 @@ model LectureProgress {
 
   @@unique([courseProgressId, lectureId]) // Ensure one record per lecture per course progress
 }
+
 

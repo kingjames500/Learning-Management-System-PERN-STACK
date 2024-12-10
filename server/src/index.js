@@ -9,6 +9,7 @@ import cloudinaryUploads from "./Routes/CloudinaryMediaUpload/cloudinaryMedia.js
 import courseRoutes from "./Routes/course/course-routes.js";
 import assignmentGen from "./Routes/openai.js";
 import studentCourseRoutes from "./Routes/course/student/student-course-routes.js";
+import studentCourseProgressRoutes from "./Routes/course/student/course-progress.js";
 
 import studentCoursePaymentRoutes from "./Routes/course/student/Payments.js";
 const app = express();
@@ -28,6 +29,7 @@ app.use(express.json());
 
 app.use("/api", studentCoursePaymentRoutes);
 app.use("/api", assignmentGen);
+app.use("/api", studentCourseProgressRoutes);
 
 // Routes for the server only
 app.use("/api", authRoutes);

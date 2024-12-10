@@ -15,6 +15,10 @@ const purchasedCourseDetailsForLearning = async (req, res) => {
       studentPurchasedCourses?.findIndex((item) => item.courseId === courseId) >
       -1;
 
+    console.log(
+      "seeing if the course is purchased or not",
+      isCurrentCoursePurchasedByCurrentUserOrNot,
+    );
     if (!isCurrentCoursePurchasedByCurrentUserOrNot) {
       return res.status(400).json({
         success: false,
@@ -26,10 +30,6 @@ const purchasedCourseDetailsForLearning = async (req, res) => {
     // Checking if the user has started to learn the course or not
     const courseProgressCheckByCurrentUser =
       await getCourseProgessByCurrentUser(userId, courseId);
-    console.log(
-      courseProgressCheckByCurrentUser,
-      "courseProgressCheckByCurrentUser",
-    );
 
     if (
       !courseProgressCheckByCurrentUser ||
@@ -69,11 +69,11 @@ const purchasedCourseDetailsForLearning = async (req, res) => {
       data: {
         courseDetails: courseProgressCheckByCurrentUser.courseDetails,
         courseProgress: courseProgressCheckByCurrentUser.lectureProgress,
+        completed: courseProgressCheckByCurrentUser.completed,
         isPurchased: true,
       },
     });
   } catch (error) {
-    console.error("Error fetching course details for learning:", error.message);
     return res.status(500).json({ message: error.message });
   }
 };

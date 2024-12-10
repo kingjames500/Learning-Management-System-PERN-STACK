@@ -9,7 +9,6 @@ const getAllCoursePurchasedByCurrentUser = async (userId) => {
         userId: userId,
       },
     });
-    console.log("From helper function", allStudentPurchasedCourses);
     return allStudentPurchasedCourses;
   } catch (error) {
     throw new Error(error.message);

@@ -9,7 +9,6 @@ const getCourseProgessByCurrentUser = async (userId, courseId) => {
         userId_courseId: { userId: userId, courseId: courseId },
       },
     });
-    console.log(courseProgress, "courseProgress from helper function");
     return courseProgress;
   } catch (error) {
     throw new Error(error.message);

@@ -178,6 +178,9 @@ export default function StudentEnrolledCourseDetails() {
       courseId: studentCurrentCourseProgess.courseDetail.id,
     });
   };
+  useEffect(() => {
+    if (showConfetti) setTimeout(() => setShowConfetti(false), 15000);
+  }, [showConfetti]);
 
   if (isError) {
     return (
@@ -189,14 +192,14 @@ export default function StudentEnrolledCourseDetails() {
     );
   }
 
-  // console.log(" waiting for current lecture to be updated",currentLecture.progressValue);
+  console.log(" waiting for current lecture to be updated", currentLecture);
   return (
     <div className="flex flex-col h-screen bg-[#1c1d1f] text-white">
       {showConfetti && <Confetti />}
       <div className="flex items-center justify-between p-4 bg-[#1c1d1f] border-b border-gray-700">
         <div className="flex items-center space-x-4">
           <Button
-            onClick={() => navigate("/student-courses")}
+            onClick={() => navigate("/student/enrolled-courses")}
             className="text-black"
             variant="ghost"
             size="sm"
@@ -216,23 +219,27 @@ export default function StudentEnrolledCourseDetails() {
           )}
         </Button>
       </div>
+
       <div className="flex flex-1 overflow-hidden">
-        <div
-          className={`flex-1 ${
-            isSideBarOpen ? "mr-[400px]" : ""
-          } transition-all duration-300`}
-        >
-          <VideoPlayer
-            width="100%"
-            height="500px"
-            url={currentLecture?.videoUrl}
-            onProgressUpdate={setCurrentLecture}
-            progressData={currentLecture}
-          />
+        {/* Container for the lecture title and video */}
+        <div className="flex flex-col flex-1 p-4 space-y-4">
+          <div
+            className={`flex-1 ${isSideBarOpen ? "mr-[400px]" : ""} transition-all duration-300`}
+          >
+            <VideoPlayer
+              width="95%"
+              height="400px"
+              url={currentLecture?.videoUrl}
+              onProgressUpdate={setCurrentLecture}
+              progressData={currentLecture}
+            />
+          </div>
           <div className="p-6 bg-[#1c1d1f]">
             <h2 className="text-2xl font-bold mb-2">{currentLecture?.title}</h2>
           </div>
         </div>
+
+        {/* Sidebar */}
         <div
           className={`fixed top-[64px] right-0 bottom-0 w-[400px] bg-[#1c1d1f] border-l border-gray-700 transition-all duration-300 ${
             isSideBarOpen ? "translate-x-0" : "translate-x-full"
@@ -242,13 +249,13 @@ export default function StudentEnrolledCourseDetails() {
             <TabsList className="grid bg-[#1c1d1f] w-full grid-cols-2 p-0 h-14">
               <TabsTrigger
                 value="content"
-                className=" text-black rounded-none h-full"
+                className="text-black rounded-none h-full"
               >
                 Course Content
               </TabsTrigger>
               <TabsTrigger
                 value="overview"
-                className=" text-black rounded-none h-full"
+                className="text-black rounded-none h-full"
               >
                 Overview
               </TabsTrigger>
@@ -267,7 +274,7 @@ export default function StudentEnrolledCourseDetails() {
                         )?.viewed ? (
                           <Check className="h-4 w-4 text-green-500" />
                         ) : (
-                          <Play className="h-4 w-4 " />
+                          <Play className="h-4 w-4" />
                         )}
                         <span>{item?.title}</span>
                       </div>
@@ -289,6 +296,8 @@ export default function StudentEnrolledCourseDetails() {
           </Tabs>
         </div>
       </div>
+
+      {/* Dialogs */}
       <Dialog open={lockCourse}>
         <DialogContent className="sm:w-[425px]">
           <DialogHeader>
@@ -299,6 +308,7 @@ export default function StudentEnrolledCourseDetails() {
           </DialogHeader>
         </DialogContent>
       </Dialog>
+
       <Dialog open={showCompletedCourseDialog}>
         <DialogContent showOverlay={false} className="sm:w-[425px]">
           <DialogHeader>
@@ -306,7 +316,7 @@ export default function StudentEnrolledCourseDetails() {
             <DialogDescription className="flex flex-col gap-3">
               <Label>You have completed the course</Label>
               <div className="flex flex-row gap-3">
-                <Button onClick={() => navigate("/student-courses")}>
+                <Button onClick={() => navigate("/student/enrolled-courses")}>
                   My Courses Page
                 </Button>
                 <Button onClick={handleRewatchCourse}>Rewatch Course</Button>
@@ -318,223 +328,3 @@ export default function StudentEnrolledCourseDetails() {
     </div>
   );
 }
-
-// import { StudentContext } from "@/components/Context/StudentContext/StudentContext";
-// import Errors from "@/components/Error/Error";
-// import { Button } from "@/components/ui/button";
-// import { ScrollArea } from "@/components/ui/scroll-area";
-// import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-// import VideoPlayer from "@/components/Video/VideoPlayer";
-// import apiUrl from "@/lib/apiUrl";
-// import { useMutation, useQuery, useQueryClient } from "react-query";
-// import { Check, ChevronLeft, ChevronRight, Play } from "lucide-react";
-// import React, { useContext, useEffect, useState } from "react";
-// import { useNavigate, useParams } from "react-router-dom";
-// import {
-//   Dialog,
-//   DialogContent,
-//   DialogDescription,
-//   DialogHeader,
-//   DialogTitle,
-// } from "@/components/ui/dialog";
-// import { Label } from "@/components/ui/label";
-
-// export default function StudentEnrolledCourseDetails() {
-//   const { courseId } = useParams();
-//   const { studentCurrentCourseProgess, setStudentCurrentCourseProgess } =
-//     useContext(StudentContext);
-
-//   const [isSideBarOpen, setIsSideBarOpen] = useState(true);
-//   const [lockCourse, setLockCourse] = useState(false);
-//   const [showConfetti, setShowConfetti] = useState(false);
-//   const [showCompletedCourseDialog, setShowCompletedCourseDialog] = useState(false);
-//   const [currentLecture, setCurrentLecture] = useState(null);
-//   const [isMarkingLecture, setIsMarkingLecture] = useState(false); // New state to track marking process
-
-//   const queryClient = useQueryClient();
-//   const navigate = useNavigate();
-
-//   // Fetch student course learning progress
-//   const { isError, error } = useQuery({
-//     queryKey: ["student-course-learning-progress", courseId],
-//     queryFn: async () => {
-//       const response = await fetch(
-//         `${apiUrl}/student/course-learning-progress/${courseId}`,
-//         {
-//           credentials: "include",
-//         }
-//       );
-
-//       if (!response.ok) {
-//         const error = await response.json();
-//         throw new Error(error.message);
-//       }
-
-//       const data = await response.json();
-//       return data;
-//     },
-//     onSuccess: (data) => {
-//       if (data?.success) {
-//         if (!data?.data?.isPurchased) {
-//           setLockCourse(true);
-//         } else {
-//           setStudentCurrentCourseProgess({
-//             courseDetail: data?.data?.courseDetails,
-//             progress: data?.data?.courseProgress,
-//           });
-
-//           if (data?.data?.completed) {
-//             setCurrentLecture(data?.data?.courseDetails?.curriculum?.[0]);
-//             setShowCompletedCourseDialog(true);
-//             setShowConfetti(true);
-//             return;
-//           }
-
-//           if (data?.data?.courseProgress?.length === 0) {
-//             setCurrentLecture(data?.data?.courseDetails?.curriculum?.[0]);
-//           } else {
-//             const lastIndexOfViewedLecture = data?.data?.courseProgress.reduceRight(
-//               (acc, obj, index) => (acc === -1 && obj.viewed ? index : acc),
-//               -1
-//             );
-//             setCurrentLecture(data?.data?.courseDetails?.curriculum?.[lastIndexOfViewedLecture + 1]);
-//           }
-//         }
-//       }
-//     },
-//   });
-
-//   // Mark lecture as viewed in the database
-//   const markLectureAsViewed = useMutation({
-//     mutationFn: async ({ courseId, lectureId }) => {
-//       const response = await fetch(`${apiUrl}/student/course/marking-lecture-as-viewed`, {
-//         method: "POST",
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//         body: JSON.stringify({ courseId, lectureId }),
-//         credentials: "include",
-//       });
-
-//       if (!response.ok) {
-//         const error = await response.json();
-//         throw new Error(error.message);
-//       }
-
-//       const data = await response.json();
-//       return data;
-//     },
-//     onSuccess: () => {
-//       queryClient.invalidateQueries(["student-course-learning-progress", courseId]);
-//     },
-//     onError: () => {
-//       setIsMarkingLecture(false); // Reset marking state on error
-//     },
-//   });
-
-//   // Ensure only one lecture is marked as viewed at a time
-//   useEffect(() => {
-//     if (currentLecture && currentLecture.progressValue === 1 && !isMarkingLecture) {
-//       setIsMarkingLecture(true); // Set marking process to active
-
-//       markLectureAsViewed.mutate(
-//         {
-//           courseId: currentLecture.courseId,
-//           lectureId: currentLecture.id,
-//         },
-//         {
-//           onSettled: () => {
-//             setIsMarkingLecture(false); // Reset marking process after completion
-//           },
-//         }
-//       );
-//     }
-//   }, [currentLecture, isMarkingLecture]);
-
-//   console.log("lecture being viewed", isMarkingLecture);
-
-//   const handleRewatchCourse = () => {
-//     // Handle logic to rewatch the course
-//   };
-
-//   if (isError) {
-//     return (
-//       <Errors
-//         error={error}
-//         linkPath="/student/enrolled-courses"
-//         linkText="Go to My Courses"
-//       />
-//     );
-//   }
-
-//   return (
-//     <div className="flex flex-col h-screen bg-[#1c1d1f] text-white">
-//       {showConfetti && <Confetti />}
-//       <div className="flex items-center justify-between p-4 bg-[#1c1d1f] border-b border-gray-700">
-//         <div className="flex items-center space-x-4">
-//           <Button
-//             onClick={() => navigate("/student-courses")}
-//             className="text-black"
-//             variant="ghost"
-//             size="sm"
-//           >
-//             <ChevronLeft className="h-4 w-4 mr-2" />
-//             Back to My Courses Page
-//           </Button>
-//           <h1 className="text-lg font-bold hidden md:block">
-//             {studentCurrentCourseProgess?.courseDetail?.title}
-//           </h1>
-//         </div>
-//         <Button onClick={() => setIsSideBarOpen(!isSideBarOpen)}>
-//           {isSideBarOpen ? (
-//             <ChevronRight className="h-5 w-5" />
-//           ) : (
-//             <ChevronLeft className="h-5 w-5" />
-//           )}
-//         </Button>
-//       </div>
-//       <div className="flex flex-1 overflow-hidden">
-//         <div className={`flex-1 ${isSideBarOpen ? "mr-[400px]" : ""} transition-all duration-300`}>
-//           <VideoPlayer
-//             width="100%"
-//             height="500px"
-//             url={currentLecture?.videoUrl}
-//             onProgressUpdate={setCurrentLecture}
-//             progressData={currentLecture}
-//           />
-//           <div className="p-6 bg-[#1c1d1f]">
-//             <h2 className="text-2xl font-bold mb-2">{currentLecture?.title}</h2>
-//           </div>
-//         </div>
-//         {/* Sidebar */}
-//         {/* Content omitted for brevity */}
-//       </div>
-//       <Dialog open={lockCourse}>
-//         <DialogContent className="sm:w-[425px]">
-//           <DialogHeader>
-//             <DialogTitle>You can't view this page</DialogTitle>
-//             <DialogDescription>
-//               Please purchase this course to get access
-//             </DialogDescription>
-//           </DialogHeader>
-//         </DialogContent>
-//       </Dialog>
-//       <Dialog open={showCompletedCourseDialog}>
-//         <DialogContent showOverlay={false} className="sm:w-[425px]">
-//           <DialogHeader>
-//             <DialogTitle>Congratulations!</DialogTitle>
-//             <DialogDescription className="flex flex-col gap-3">
-//               <Label>You have completed the course</Label>
-//               <div className="flex flex-row gap-3">
-//                 <Button onClick={() => navigate("/student-courses")}>
-//                   My Courses Page
-//                 </Button>
-//                 <Button onClick={handleRewatchCourse}>Rewatch Course</Button>
-//               </div>
-//             </DialogDescription>
-//           </DialogHeader>
-//         </DialogContent>
-//       </Dialog>
-//     </div>
-//   );
-// }

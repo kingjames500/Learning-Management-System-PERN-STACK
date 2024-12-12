@@ -36,8 +36,6 @@ function StudentCourses() {
     getStudentEnrolledCourses();
   }, []);
 
-  console.log(studentEnrolledCourses, "studentEnrolledCourses");
-
   if (isLoading) {
     return <h1>Loading...</h1>;
   }

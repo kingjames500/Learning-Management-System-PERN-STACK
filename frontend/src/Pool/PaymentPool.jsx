@@ -1,7 +1,5 @@
 import apiUrl from "@/lib/apiUrl";
-import { Loader2 } from "lucide-react";
-import React, { useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React from "react";
 
 export const paymentStatusUpdate = async (checkoutRequestID) => {
   try {
@@ -17,7 +15,6 @@ export const paymentStatusUpdate = async (checkoutRequestID) => {
       throw new Error(error.message || "Unknown error occurred");
     }
     const data = await response.json();
-    console.log("update payment status", data);
     return data;
   } catch (error) {
     console.error("error while updating payment status", error);

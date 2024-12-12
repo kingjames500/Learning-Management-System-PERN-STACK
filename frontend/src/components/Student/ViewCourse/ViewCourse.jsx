@@ -140,7 +140,6 @@ function ViewCourse() {
   useInterval(async () => {
     if (checkoutRequestID) {
       const data = await paymentStatusUpdate(checkoutRequestID);
-      console.log(data, "from payment status update");
       if (data && data?.success) {
         if (data.message === "requested") {
           setStatusMessage("Stk push was successful, please enter your pin");
@@ -149,20 +148,21 @@ function ViewCourse() {
           setStatusMessage(
             "Payment was successful, you can now access the course",
           );
+          handleClosePool();
 
           setTimeout(() => {
             redirect("/student/enrolled-courses");
           }, 2000);
-          handleClosePool();
+
           return;
         }
         if (data.message === "rejected") {
+          handleClosePool();
           setStatusMessage("Payment was rejected, please try again");
-
           setTimeout(() => {
             redirect("/student");
           }, 2000);
-          handleClosePool();
+
           return;
         }
       }
@@ -269,7 +269,7 @@ function ViewCourse() {
                         ].videoUrl
                       : "No vidoe Available"
                   }
-                  width="450px"
+                  width="550px"
                   height="200px"
                 />
               </div>

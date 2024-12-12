@@ -1,5 +1,5 @@
 import { GraduationCap } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import userDetailsStore from "@/Store/userStoreDetails";
 import StudentHeader from "./StudentHeader";
 import AdminHeader from "./AdminHeader";
@@ -7,6 +7,15 @@ import AdminHeader from "./AdminHeader";
 function Header() {
   const user = userDetailsStore((state) => state.user);
   const role = user ? user.role : null;
+  const location = useLocation();
+
+  const hideHeaderForStudentCourse = location.pathname.startsWith(
+    "/student/purchased-enrolled-course/",
+  );
+
+  if (hideHeaderForStudentCourse) {
+    return null; // Don't render the Header if on the specific path
+  }
 
   return (
     <>

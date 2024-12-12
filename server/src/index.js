@@ -12,6 +12,7 @@ import studentCourseRoutes from "./Routes/course/student/student-course-routes.j
 import studentCourseProgressRoutes from "./Routes/course/student/course-progress.js";
 
 import studentCoursePaymentRoutes from "./Routes/course/student/Payments.js";
+import apiLimiter from "./middleware/requestLimiter/requestLimiter.js";
 const app = express();
 dotenv.config();
 
@@ -27,19 +28,19 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.json());
 
-app.use("/api", studentCoursePaymentRoutes);
-app.use("/api", assignmentGen);
-app.use("/api", studentCourseProgressRoutes);
+app.use("/api", apiLimiter, studentCoursePaymentRoutes);
+app.use("/api", apiLimiter, assignmentGen);
+app.use("/api", apiLimiter, studentCourseProgressRoutes);
 
 // Routes for the server only
-app.use("/api", authRoutes);
-app.use("/api", cloudinaryUploads);
+app.use("/api", apiLimiter, authRoutes);
+app.use("/api",apiLimiter,  cloudinaryUploads);
 
 // student course routes
-app.use("/api", studentCourseRoutes);
+app.use("/api", apiLimiter, studentCourseRoutes);
 
 //course routes
-app.use("/api", courseRoutes);
+app.use("/api", apiLimiter, courseRoutes);
 app.listen(process.env.SERVER_PORT, () => {
   console.log(`Server is running on port ${process.env.SERVER_PORT}`);
 });

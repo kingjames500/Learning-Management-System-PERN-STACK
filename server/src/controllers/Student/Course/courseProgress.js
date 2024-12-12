@@ -57,6 +57,47 @@ export const markCurrentLectureAsViewed = async (req, res) => {
       }
     }
 
+    const course = await prisma.course.findUnique({
+      where: {
+        id: courseId,
+      },
+      include: {
+        curriculum: true,
+      },
+    });
+
+    if (!course) {
+      return res.status(400).json({
+        success: false,
+        message: "course not found",
+      });
+    }
+
+    // refreshing courseprogress so as we can check all viewed lecture
+    // Refresh progress data after possible updates
+    progress = await getCurrentCourseProgressWithLectureProgress(
+      userId,
+      courseId,
+    );
+
+    //
+
+    // check all the lectures are viewed or not
+    const checkAllViewedLectures =
+      progress.lecturesProgress.length === course.curriculum.length &&
+      progress.lecturesProgress.every((item) => item.viewed);
+    console.log("viewedlectures", checkAllViewedLectures);
+
+    if (checkAllViewedLectures) {
+      await prisma.courseProgress.update({
+        where: { id: progress.id },
+        data: {
+          completed: true,
+          completionDate: new Date(),
+        },
+      });
+    }
+
     res.status(200).json({
       success: true,
       message: "Lecture marked as viewed",
@@ -90,7 +131,7 @@ export const resetCourseProgress = async (req, res) => {
       return;
     }
 
-    const resetProgressCourse = await prisma.courseProgress.update({
+    await prisma.courseProgress.update({
       where: { userId_courseId: { userId, courseId } },
       data: {
         lecturesProgress: {
@@ -106,7 +147,6 @@ export const resetCourseProgress = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "Course progress reset successfully",
-      data: resetProgressCourse,
     });
     return;
   } catch (error) {
